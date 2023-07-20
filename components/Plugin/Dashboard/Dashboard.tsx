@@ -37,7 +37,7 @@ export default function Dashboard(props: IOwnProps) {
         <Header>
         <Title>Dashboard</Title>  
         </Header>
-            <MilestoneList setSelectedAssignmentId={props.setSelectedAssignmentId} milestones={props.milestones}/>
+            <MilestoneList editable={false} setSelectedAssignmentId={props.setSelectedAssignmentId} milestones={props.milestones}/>
             <Charts/>
       </DashboardContainer>
     )

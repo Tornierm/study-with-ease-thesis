@@ -1,38 +1,69 @@
 import styled from "styled-components"
 import { IMilestone, Prio } from "../../Interfaces";
 import { Dispatch, SetStateAction } from "react";
+import { SubTitle, Title2 } from "../../styled";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const MilestoneContainer = styled.div`
   background-color: ${props => props.color};
-  height:100px;
+  min-height:80px;
   width: 100%;
+  padding:4px 4px 4px 8px;
+  display:grid;
+  border-radius: 4px;
+  border:1px solid black;
+  grid-template-areas: "nothing breadcrumbs breadcrumbs breadcrumbs breadcrumbs delete"
+                        "checkbox title title title title manage"
+                        "free deadline deadline deadline deadline deadline";
+  grid-template-rows: 1fr 1fr 1fr;
 `
 
-const Name = styled.p`
-    font-size: 12px;
+const Name = styled(Title2)`
+    grid-area: title;
 `
 
-const MilestoneHeader = styled.div`
-    display: flex;
+const Breadcrumbs = styled(SubTitle)`
+    grid-area: breadcrumbs;
+`
+
+const Delete = styled.p`
+    grid-area: delete;
+`
+
+const Deadline = styled.p`
     font-size: 12px;
-    gap:8px;
+    grid-area: deadline;
+`
+
+const Box = styled(Checkbox)`
+    grid-area: checkbox;
+`
+
+const Manage = styled.div`
+    grid-area: manage;
 `
 
 interface IOwnProps {
     milestone: IMilestone;
     setSelectedAssignmentId: Dispatch<SetStateAction<number | undefined>>;
+    onDelete: () => void;
+    editable: boolean;
 }
 
 export default function Dashboard(props: IOwnProps) {
     return (
-      <MilestoneContainer onClick={() => props.setSelectedAssignmentId(props.milestone.assignmentId)} color={getColor(props.milestone.prio)}>
-        <MilestoneHeader>
-            {props.milestone.class}{">"}
-            {props.milestone.assignment}{">"}
-            {props.milestone.name}
-        </MilestoneHeader>
-        
-        <Name>{props.milestone.deadline?.toDateString()}</Name>
+      <MilestoneContainer color={getColor(props.milestone.prio)}>
+            <Breadcrumbs>
+                {props.milestone.course}{">"}
+                {props.milestone.assignment}{">"}
+            </Breadcrumbs>
+            <Name>{props.milestone.name + (props.milestone.estimate ? "("+props.milestone.estimate+")" : "")}</Name>
+            <Deadline>{props.milestone.deadline?.toDateString()}</Deadline>
+            <Box onClick={() => {}}/>
+            <Manage onClick={() => props.setSelectedAssignmentId(props.milestone.assignmentId)}>{">"}</Manage>
+        {
+            props.editable && (typeof props.milestone.kind == 'undefined') ? <Delete onClick={props.onDelete}>x</Delete>:<></>
+        }
       </MilestoneContainer>
     )
 }
@@ -58,6 +89,8 @@ const getColor = (prio: Prio): string => {
         return "#FF3D00"
     } if(prio == Prio.p9){
         return "#ff0000"
+    } if(prio == Prio.p10){
+        return "white"
     }
     return "white"
 }

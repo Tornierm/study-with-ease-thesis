@@ -1,5 +1,5 @@
 import styled from "styled-components"
-import { IAssignment, IMilestone, Prio, Status } from "../Interfaces";
+import { IAssignment, IMilestone, IMilestoneData, Prio, Status } from "../Interfaces";
 import { useEffect, useState } from "react";
 import TaskManager from "./TaskManager";
 import MilestoneList from "../Dashboard/MilestoneList/MilestoneList";
@@ -30,10 +30,11 @@ const Header = styled.div`
 const newMilestone: IMilestone = {
   status: Status.ongoing,
   name: "",
+  description:"",
   assignment: "",
   assignmentId: 0,
-  class: "",
-  classId: 0,
+  course: "",
+  courseId: 0,
   id: 0,
   prio: Prio.p0,
 }
@@ -41,6 +42,11 @@ const newMilestone: IMilestone = {
 interface IOwnProps {
   selectedAssignment: IAssignment;
   close: any;
+  addMilestone: (milestone: IMilestoneData) => void;
+  deleteMilestone: (milestone: IMilestone) => void;
+  swapMilestoneUp: (swappedMilestone: IMilestone, swapMilestones: IMilestone[]) => void;
+  swapMilestoneDown: (swappedMilestone: IMilestone, swapMilestones: IMilestone[]) => void;
+  currentDate: Date;
 }
 
 export default function MilestoneManager(props: IOwnProps) {
@@ -66,8 +72,14 @@ export default function MilestoneManager(props: IOwnProps) {
                 <div onClick={props.close}>x</div>
               </Header>
               
-              <MilestoneList setSelectedAssignmentId={()=>{}} milestones={props.selectedAssignment.milestones}/>
-              <MilestoneForm milestone={tmp}/>
+              <MilestoneList swapMilestoneUp={props.swapMilestoneUp} swapMilestoneDown={props.swapMilestoneDown} editable={true} deleteMilestone={props.deleteMilestone} setSelectedAssignmentId={()=>{}} milestones={props.selectedAssignment.milestones}/>
+              <MilestoneForm 
+                currentDate={props.currentDate}
+                addMilestone={props.addMilestone}
+                milestone={tmp}
+                courseId={props.selectedAssignment.courseId}
+                assignment={props.selectedAssignment} 
+              />
               <Instructions/>
           </MilestoneManagerContainer>
         }

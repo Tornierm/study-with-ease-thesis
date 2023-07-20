@@ -1,32 +1,43 @@
 export interface ICourse {
-    name: String;
+    name: string;
     id:number;
-    assignments:IAssignment[];
+    assignments:Map<number, IAssignment>;
 }
     
-export interface IAssignment{
-    start: Date;
-    deadline: Date;
-    name:string;
+export interface IAssignment extends IAssignmentData{
     id:number;
     // instructions: string;
     // material: string;
-    className: string;
-    classId: number;
+    courseName: string;
+    courseId: number;
     milestones:IMilestone[];
-    //Calculateprios(): (assignment) => assignmentWithPrio;
+    counter: number;
+} 
+
+export interface IAssignmentData {
+    start: Date;
+    deadline: Date;
+    name:string;
+    // instructions: string;
+    // material: string;
 } 
     
-export interface IMilestone {
+export interface IMilestone extends IMilestoneData {
     status: Status;
-    name: string;
     assignment: string;
-    assignmentId: number;
-    class: string;
-    classId: number;
+    estimate?: number;
+    course: string;
     id: number;
     prio: Prio;
     completionDate?: Date;
+    kind?: Kind;
+}
+
+export interface IMilestoneData {
+    name: string;
+    description: string;
+    assignmentId: number;
+    courseId: number;
     deadline?: Date;
 }
 
@@ -41,8 +52,13 @@ export enum Status {
 	"finished",
     "ongoing"
 }
+
+export enum Kind {
+	"submit",
+    "plan"
+}
     
 export enum Prio {
-	"p0","p1","p2","p3","p4","p5","p6","p7","p8","p9"
+	"p0","p1","p2","p3","p4","p5","p6","p7","p8","p9","p10"
 }
     
