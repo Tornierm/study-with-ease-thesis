@@ -2,7 +2,6 @@ import styled from "styled-components"
 import MilestoneList from "./MilestoneList/MilestoneList"
 import Charts from "./Charts"
 import { Title } from "../styled"
-import { DummyMilestones } from "../DummyData"
 import { Dispatch, SetStateAction } from "react"
 import { IChartData, IMilestone } from "../Interfaces"
 
