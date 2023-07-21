@@ -57,11 +57,13 @@ export default function MilestoneForm(props: IOwnProps) {
       description: description,
       courseId: props.courseId,
       deadline: deadline,
+      estimate: estimate? estimate[0]: undefined,
     }
     props.addMilestone(newMilestone)
   }
 
   const handleSliderChange = (newValue: number[]) => {
+    console.log(newValue)
     setEstimate(newValue);
   };
 
@@ -74,6 +76,7 @@ export default function MilestoneForm(props: IOwnProps) {
       }
     }
     validate()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   },[name])
 
   return (

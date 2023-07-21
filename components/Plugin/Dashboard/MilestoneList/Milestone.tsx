@@ -14,8 +14,10 @@ const MilestoneContainer = styled.div`
   border:1px solid black;
   grid-template-areas: "nothing breadcrumbs breadcrumbs breadcrumbs breadcrumbs delete"
                         "checkbox title title title title manage"
-                        "free deadline deadline deadline deadline deadline";
+                        "free deadline deadline deadline deadline none";
   grid-template-rows: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 20px;
+  gap:0px 8px;
 `
 
 const Name = styled(Title2)`
@@ -30,9 +32,16 @@ const Delete = styled.p`
     grid-area: delete;
 `
 
-const Deadline = styled.p`
+const Deadline = styled.div`
     font-size: 12px;
     grid-area: deadline;
+`
+
+const SpaceBetween = styled.div`
+    display: flex;
+    width: 100%;
+    align-items: space-between;
+    justify-content: space-between;
 `
 
 const Box = styled(Checkbox)`
@@ -60,8 +69,11 @@ export default function Dashboard(props: IOwnProps) {
                 {props.milestone.course}{">"}
                 {props.milestone.assignment}{">"}
             </Breadcrumbs>
-            <Name>{props.milestone.name + (props.milestone.estimate ? "("+props.milestone.estimate+")" : "")}</Name>
-            <Deadline>{props.milestone.deadline?.toDateString()}</Deadline>
+            <Name>{props.milestone.name}</Name>
+            <Deadline>
+                {props.milestone.deadline && <SpaceBetween><div>{"Deadline:"}</div><div>{props.milestone.deadline?.toDateString()}</div></SpaceBetween>}
+                {props.milestone.estimate && <SpaceBetween><div>{"Estimate:"}</div><div>{props.milestone.estimate}</div></SpaceBetween>}
+            </Deadline>
             <Box onCheckedChange={() => props.toggleDone(props.milestone)} checked={props.milestone.status === Status.finished}/>
             <Manage onClick={() => props.setSelectedAssignmentId(props.milestone.assignmentId)}>{">"}</Manage>
         {

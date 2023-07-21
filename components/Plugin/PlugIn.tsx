@@ -355,8 +355,8 @@ export default function PlugIn() {
     },[update])
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/exhaustive-deps
       setUpdate(!update)
+      // eslint-disable-next-line react-hooks/exhaustive-deps
   },[currentDate])
 
     return (

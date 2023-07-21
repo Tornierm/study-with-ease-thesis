@@ -30,7 +30,6 @@ export interface IAssignmentData {
 export interface IMilestone extends IMilestoneData {
     status: Status;
     assignment: string;
-    estimate?: number;
     course: string;
     id: number;
     prio: Prio;
@@ -44,6 +43,7 @@ export interface IMilestoneData {
     assignmentId: number;
     courseId: number;
     deadline?: Date;
+    estimate?: number;
 }
 
 export interface ITask {
