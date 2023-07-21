@@ -5,12 +5,11 @@ import { Dispatch, SetStateAction, useEffect } from "react";
 
 const MilestoneListContainer = styled.div`
   grid-area: list;
-  background-color: light grey;
   display:flex;
   flex-direction: column;
   gap: 8px;
   padding:8px 16px 8px 8px;
-  background-color: lightgray;
+  border: 2px solid black;
   overflow: scroll;
 `
 
@@ -39,6 +38,7 @@ interface IOwnProps {
     deleteMilestone?: (milestone: IMilestone) => void;
     swapMilestoneUp?: (swappedMilestone: IMilestone, swapMilestones: IMilestone[]) => void
     swapMilestoneDown?: (swappedMilestone: IMilestone, swapMilestones: IMilestone[]) => void
+    toggleDone: (milestone: IMilestone) => void;
     editable:boolean;
 }
 
@@ -62,6 +62,7 @@ export default function MilestoneList(props: IOwnProps) {
                     : <></>
                   }
                   <Milestone 
+                    toggleDone={props.toggleDone}
                     editable={props.editable} 
                     onDelete={() => onDelete(milestone)} 
                     setSelectedAssignmentId={props.setSelectedAssignmentId} 

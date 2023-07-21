@@ -1,7 +1,7 @@
 import styled from "styled-components"
 import Dashboard from "./Dashboard/Dashboard"
 import { useEffect, useState } from "react"
-import { IAssignment, ICourse, IMilestone, IMilestoneData, Kind, Prio, Status } from "./Interfaces"
+import { IAssignment, IChartData, ICourse, IMilestone, IMilestoneData, Kind, Prio, Status } from "./Interfaces"
 import MilestoneManager from "./MilestoneManager/MilestoneManager"
 import TimeWizard from "./TimeWizard/TimeWizard"
 import _ from "lodash"
@@ -9,7 +9,6 @@ import _ from "lodash"
 const DashboardContainer = styled.div`
   height: 600px;
   width: 600px;
-  background-color: aliceblue;
   margin-top:52px;
 `
 
@@ -103,13 +102,14 @@ const initialCourses: Map<number, ICourse> = new Map([
 const InitialDate = new Date(2023,9,16)
 
 export default function PlugIn() {
+    const [currentDate, setCurrentDate] = useState<Date>(InitialDate);
     const [selectedAssignmentId, setSelectedAssignmentId] = useState<number | undefined>(undefined)
     const [selectedAssignment, setSelectedAssignment] = useState<IAssignment | undefined>(undefined)
     const [assignments, setAssignments] = useState<IAssignment[]>(getAssignmentsFromCourses(initialCourses))
     const [courses] = useState<Map<number, ICourse>>(initialCourses)
-    const [milestones, setMilestones] = useState<IMilestone[]>(getMilestonesFromCourses(initialCourses))
+    const [milestones, setMilestones] = useState<IMilestone[]>(getMilestonesFromCourses(initialCourses, currentDate))
     const [update, setUpdate] = useState<boolean>(true);
-    const [currentDate, setCurrentDate] = useState<Date>(InitialDate);
+    const [chartData, setChartData] = useState<IChartData[][]>(calculateChartData(courses, currentDate));
 
     const swapMilestoneUp = (swappedMilestone: IMilestone, swapMilestones: IMilestone[]) => {
       let index = milestones.findIndex((milestone) => {
@@ -121,6 +121,22 @@ export default function PlugIn() {
           swapElements(swapMilestones, index, swapindex);
         }
       }
+    }
+
+    const toggleDone = (milestone: IMilestone) => {
+      if(milestone.status === Status.finished){
+          milestone.status = Status.ongoing
+          milestone.completionDate = undefined;
+      } else {
+          milestone.status= Status.finished
+          milestone.completionDate = new Date(JSON.parse(JSON.stringify(currentDate)));
+          console.log("toggle")
+          console.log(milestone.completionDate)
+          console.log(currentDate)
+          console.log("toggle")
+
+      }
+      setUpdate(true);
     }
 
     const swapMilestoneDown = (swappedMilestone: IMilestone, swapMilestones: IMilestone[]) => {
@@ -318,52 +334,6 @@ export default function PlugIn() {
       }
     }
 
-    const getPrioReverse = (prio: number) => {
-      if(prio>9){
-        prio = 9;
-      }
-      if(prio<1){
-        prio = 1;
-      }
-      switch (prio) {
-        case 1:
-          return Prio.p9
-        case 2:
-          return Prio.p8
-        case 3:
-          return Prio.p7
-        case 4:
-          return Prio.p6
-        case 5:
-          return Prio.p5
-        case 6:
-          return Prio.p4
-        case 7:
-          return Prio.p3
-        case 8:
-          return Prio.p2
-        case 9:
-          return Prio.p1
-        default:
-          return Prio.p0;
-      }
-    }
-
-    const milliSecToDays = (mil: number) => {
-      return mil/(1000 * 3600 * 24)
-    }
-
-    const addDays = (date: Date, days: number) => {
-      var result = new Date(date);
-      result.setDate(result.getDate() + days);
-      return result;
-    }
-
-    const getTimeDifInDays = (date1: Date, date2: Date): number => {
-      let dif= date1.getTime() - date2.getTime();
-      return Math.round(milliSecToDays(dif))
-    }
-
     useEffect(() => {
       if(selectedAssignmentId){
         setSelectedAssignment(getAssignmentById(selectedAssignmentId, assignments))
@@ -374,16 +344,19 @@ export default function PlugIn() {
 
     useEffect(() => {
         if(update){
-          setMilestones(getMilestonesFromCourses(courses))
+          setMilestones(getMilestonesFromCourses(courses, currentDate))
           setAssignments(getAssignmentsFromCourses(courses))
           calculateUrgencyForCourses()
+          setChartData(calculateChartData(courses, currentDate))
+          console.log(chartData)
           setUpdate(false)
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[update])
 
   useEffect(() => {
-      setUpdate(true)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+      setUpdate(!update)
   },[currentDate])
 
     return (
@@ -398,8 +371,9 @@ export default function PlugIn() {
               deleteMilestone={deleteMilestoneFromAssignment}
               swapMilestoneUp={swapMilestoneUp}
               swapMilestoneDown={swapMilestoneDown}
+              toggleDone={toggleDone}
             /> 
-            : <Dashboard setSelectedAssignmentId={setSelectedAssignmentId} milestones={milestones}/>
+            : <Dashboard chartData={chartData} toggleDone={toggleDone} setSelectedAssignmentId={setSelectedAssignmentId} milestones={milestones}/>
           }
           <TimeWizard setDate={setCurrentDate} date={currentDate}/>
       </DashboardContainer>
@@ -425,13 +399,180 @@ function getAssignmentsFromCourses(courses: Map<number, ICourse>): IAssignment[]
   return assignments;
 }
 
-function getMilestonesFromCourses(courses: Map<number, ICourse>): IMilestone[] {
+const getPrioReverse = (prio: number) => {
+  if(prio>9){
+    prio = 9;
+  }
+  if(prio<1){
+    prio = 1;
+  }
+  switch (prio) {
+    case 1:
+      return Prio.p9
+    case 2:
+      return Prio.p8
+    case 3:
+      return Prio.p7
+    case 4:
+      return Prio.p6
+    case 5:
+      return Prio.p5
+    case 6:
+      return Prio.p4
+    case 7:
+      return Prio.p3
+    case 8:
+      return Prio.p2
+    case 9:
+      return Prio.p1
+    default:
+      return Prio.p0;
+  }
+}
+
+const milliSecToDays = (mil: number) => {
+  return mil/(1000 * 3600 * 24)
+}
+
+const addDays = (date: Date, days: number) => {
+  var result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+}
+
+const getTimeDifInDays = (date1: Date, date2: Date): number => {
+  let dif= date1.getTime() - date2.getTime();
+  return Math.round(milliSecToDays(dif))
+}
+
+const getMilestonesFromCourses = (courses: Map<number, ICourse>, currentDate: Date): IMilestone[] => {
   let assignments = getAssignmentsFromCourses(courses);
   let milestones: IMilestone[] = [];
   assignments.forEach((assignment) => {
     assignment.milestones.forEach(milestone => {
-      milestones.push(milestone);
+      if((milestone.status === Status.ongoing) && (getTimeDifInDays(assignment.start, currentDate) <= 0)){
+        milestones.push(milestone);
+      }
     })
   })
   return milestones;
+}
+const calculateChartData = (courses: Map<number, ICourse>, currentDate: Date): IChartData[][] => {
+  console.log("calculateChartData")
+
+  let days = {
+    1: addDays(currentDate, -4),
+    2: addDays(currentDate, -3),
+    3: addDays(currentDate, -2),
+    4: addDays(currentDate, -1),
+    5: addDays(currentDate, -0),
+  }
+
+  let weeks = {
+    1: getWeek(addDays(currentDate, -28)),
+    2: getWeek(addDays(currentDate, -21)),
+    3: getWeek(addDays(currentDate, -14)),
+    4: getWeek(addDays(currentDate, -7)),
+    5: getWeek(addDays(currentDate, -0)),
+  }
+
+  let chartData:IChartData[][] =[
+    [
+      {
+        id: getDateString(days[1]),
+        value: getValueForDay(days[1], courses),
+      },
+      {
+        id: getDateString(days[2]),
+        value: getValueForDay(days[2], courses),
+      },
+      {
+        id: getDateString(days[3]),
+        value: getValueForDay(days[3], courses),
+      },
+      {
+        id: getDateString(days[4]),
+        value: getValueForDay(days[4], courses),
+      },
+      {
+        id: getDateString(days[5]),
+        value: getValueForDay(days[5], courses),
+      },
+    ],
+    [
+      {
+        id: weeks[1].toString(),
+        value: getValueForWeek(weeks[1], courses),
+      },
+      {
+        id: weeks[2].toString(),
+        value: getValueForWeek(weeks[2], courses),
+      },
+      {
+        id: weeks[3].toString(),
+        value: getValueForWeek(weeks[3], courses),
+      },
+      {
+        id: weeks[4].toString(),
+        value: getValueForWeek(weeks[4], courses),
+      },
+      {
+        id: weeks[5].toString(),
+        value: getValueForWeek(weeks[5], courses),
+      },
+    ],
+    [
+      
+    ]
+  ];
+  return chartData;
+}
+
+const getDateString = (date: Date) => {
+  return date.getDate().toString() + "." + date.getMonth().toString()
+}
+
+const getValueForDay = (day: Date, courses: Map<number, ICourse>): number => {
+  let value = 0;
+  courses.forEach((c) => {
+    c.assignments.forEach((a) => {
+      a.milestones.forEach((m) => {
+        if(day.getTime() == m.completionDate?.getTime()){
+          value = value + 1
+        }
+      })
+    })
+  })
+  return value
+}
+
+const getValueForWeek = (week: number, courses: Map<number, ICourse>): number => {
+  let value = 0;
+  courses.forEach((c) => {
+    c.assignments.forEach((a) => {
+      a.milestones.forEach((m) => {
+        if(m.completionDate){
+          console.log(week)
+          console.log(getWeek(m.completionDate))
+          if(week == getWeek(m.completionDate)){
+            value = value + 1
+          }
+        }
+      })
+    })
+  })
+  console.log(value)
+  return value
+}
+
+const getWeek = (d: Date) => {
+  let date = new Date(JSON.parse(JSON.stringify(d)))
+  date.setHours(0, 0, 0, 0);
+  // Thursday in current week decides the year.
+  date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+  // January 4 is always in week 1.
+  var week1 = new Date(date.getFullYear(), 0, 4);
+  // Adjust to Thursday in week 1 and count number of weeks from date to week1.
+  return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000
+                        - 3 + (week1.getDay() + 6) % 7) / 7);
 }

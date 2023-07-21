@@ -4,7 +4,7 @@ import Charts from "./Charts"
 import { Title } from "../styled"
 import { DummyMilestones } from "../DummyData"
 import { Dispatch, SetStateAction } from "react"
-import { IMilestone } from "../Interfaces"
+import { IChartData, IMilestone } from "../Interfaces"
 
 const DashboardContainer = styled.div`
   height: 600px;
@@ -28,6 +28,8 @@ const Header = styled.div`
 interface IOwnProps {
     setSelectedAssignmentId: Dispatch<SetStateAction<number | undefined>>
     milestones: IMilestone[];
+    chartData: IChartData[][];
+    toggleDone: (m:IMilestone) => void;
 }
 
 
@@ -37,8 +39,8 @@ export default function Dashboard(props: IOwnProps) {
         <Header>
         <Title>Dashboard</Title>  
         </Header>
-            <MilestoneList editable={false} setSelectedAssignmentId={props.setSelectedAssignmentId} milestones={props.milestones}/>
-            <Charts/>
+            <MilestoneList toggleDone={props.toggleDone} editable={false} setSelectedAssignmentId={props.setSelectedAssignmentId} milestones={props.milestones}/>
+            <Charts chartData={props.chartData}/>
       </DashboardContainer>
     )
   }

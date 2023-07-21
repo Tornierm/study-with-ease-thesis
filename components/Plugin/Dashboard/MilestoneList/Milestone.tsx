@@ -1,5 +1,5 @@
 import styled from "styled-components"
-import { IMilestone, Prio } from "../../Interfaces";
+import { IMilestone, Prio, Status } from "../../Interfaces";
 import { Dispatch, SetStateAction } from "react";
 import { SubTitle, Title2 } from "../../styled";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -47,10 +47,13 @@ interface IOwnProps {
     milestone: IMilestone;
     setSelectedAssignmentId: Dispatch<SetStateAction<number | undefined>>;
     onDelete: () => void;
+    toggleDone: (m: IMilestone) => void;
     editable: boolean;
 }
 
 export default function Dashboard(props: IOwnProps) {
+    
+
     return (
       <MilestoneContainer color={getColor(props.milestone.prio)}>
             <Breadcrumbs>
@@ -59,7 +62,7 @@ export default function Dashboard(props: IOwnProps) {
             </Breadcrumbs>
             <Name>{props.milestone.name + (props.milestone.estimate ? "("+props.milestone.estimate+")" : "")}</Name>
             <Deadline>{props.milestone.deadline?.toDateString()}</Deadline>
-            <Box onClick={() => {}}/>
+            <Box onCheckedChange={() => props.toggleDone(props.milestone)} checked={props.milestone.status === Status.finished}/>
             <Manage onClick={() => props.setSelectedAssignmentId(props.milestone.assignmentId)}>{">"}</Manage>
         {
             props.editable && (typeof props.milestone.kind == 'undefined') ? <Delete onClick={props.onDelete}>x</Delete>:<></>

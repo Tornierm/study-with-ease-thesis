@@ -1,18 +1,22 @@
 import styled from "styled-components"
 import { Bar, Chart } from 'react-chartjs-2';
-import { registerables, Chart as ChartJS, BubbleDataPoint, ChartData, Point } from "chart.js"
+import { registerables, Chart as ChartJS } from "chart.js"
+import { IChartData } from "../Interfaces";
+import {Title, Title2} from '../styled'
 ChartJS.register(
   ...registerables
 );
 
 const ChartsContainer = styled.div`
   grid-area: charts;
-  background-color: yellow;
-  display:flex;
-  flex-direction: column;
+  border: 2px solid black;
   overflow: scroll;
   padding:8px;
-`
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  `
+
 
 const chartData = [
   {
@@ -29,23 +33,84 @@ const chartData = [
   },
 ]
 
+interface IOwnProps {
+  chartData: IChartData[][]
+}
 
-export default function Charts() {
 
-    const Data = {
+export default function Charts(props: IOwnProps) {
+
+    const DayData = {
       type: "bar",
-      labels:chartData.map(d => d.id),
+      labels:props.chartData[0].map(d => d.id),
       datasets: [
         {
           type: 'line' as const,
-          label: 'Baseline',
-          data: [2, 2, 2 ]
-          
+          label: 'Daily Scope',
+          data: props.chartData[0].map(d => 2),
+          backgroundColor: [
+            'black',
+          ],
+          borderColor: [
+            'black',
+          ],
         },
         {
           type: 'bar' as const,
-          label: "hello world",
-          data: chartData.map(d => d.value)
+          label: "Milestones",
+          data: props.chartData[0].map(d => d.value),
+          backgroundColor: [
+            'rgba(54, 162, 235, 1)',
+          ],
+          borderColor: [
+            'rgba(54, 162, 235, 1)',
+          ],
+        }
+      ]
+    }
+
+    const dayOptions = {
+      plugins: {
+        title: {
+          display: true,
+          text: 'Milestones reached per Day',
+        },
+      },
+    };
+
+    const weekOptions = {
+      plugins: {
+        title: {
+          display: true,
+          text: 'Milestones reached per Week',
+        },
+      },
+    };
+
+    const pieOptions = {
+      plugins: {
+        title: {
+          display: true,
+          text: 'Assignments finished per Class',
+        },
+      },
+    };
+
+    const WeekData = {
+      type: "bar",
+      labels:props.chartData[1].map(d => d.id),
+      
+      datasets: [
+        {
+          type: 'bar' as const,
+          label: "Milestones",
+          data: props.chartData[1].map(d => d.value),
+          backgroundColor: [
+            'rgba(54, 162, 235, 1)',
+          ],
+          borderColor: [
+            'rgba(54, 162, 235, 1)',
+          ],
         }
       ]
     }
@@ -81,10 +146,12 @@ const pieData = {
 
     return (
       <ChartsContainer>
-            Charts
-            <Chart data={Data} type={"bar"}></Chart>
-            <Chart data={Data} type={"bar"}></Chart>
-            <Chart data={pieData} type={"pie"}></Chart>
+            <Title2>Milestones per Day</Title2>
+            <Chart data={DayData} type={"bar"}></Chart>
+            <Title2>Milestones per Week</Title2>
+            <Chart data={WeekData} type={"bar"}></Chart>
+            <Title2>Assignments per Class</Title2>
+            <Chart data={pieData} options={pieOptions} type={"pie"}></Chart>
       </ChartsContainer>
     )
   }

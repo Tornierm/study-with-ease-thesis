@@ -14,6 +14,11 @@ export interface IAssignment extends IAssignmentData{
     counter: number;
 } 
 
+export interface IChartData {
+    id: string;
+    value: number;
+}
+
 export interface IAssignmentData {
     start: Date;
     deadline: Date;

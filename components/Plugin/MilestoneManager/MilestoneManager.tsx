@@ -46,6 +46,7 @@ interface IOwnProps {
   deleteMilestone: (milestone: IMilestone) => void;
   swapMilestoneUp: (swappedMilestone: IMilestone, swapMilestones: IMilestone[]) => void;
   swapMilestoneDown: (swappedMilestone: IMilestone, swapMilestones: IMilestone[]) => void;
+  toggleDone: (milestone: IMilestone) => void;
   currentDate: Date;
 }
 
@@ -72,7 +73,7 @@ export default function MilestoneManager(props: IOwnProps) {
                 <div onClick={props.close}>x</div>
               </Header>
               
-              <MilestoneList swapMilestoneUp={props.swapMilestoneUp} swapMilestoneDown={props.swapMilestoneDown} editable={true} deleteMilestone={props.deleteMilestone} setSelectedAssignmentId={()=>{}} milestones={props.selectedAssignment.milestones}/>
+              <MilestoneList toggleDone={props.toggleDone} swapMilestoneUp={props.swapMilestoneUp} swapMilestoneDown={props.swapMilestoneDown} editable={true} deleteMilestone={props.deleteMilestone} setSelectedAssignmentId={()=>{}} milestones={props.selectedAssignment.milestones}/>
               <MilestoneForm 
                 currentDate={props.currentDate}
                 addMilestone={props.addMilestone}
