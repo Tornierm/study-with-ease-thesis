@@ -100,7 +100,6 @@ export default function MilestoneForm(props: IOwnProps) {
         <SliderContainer>
           <Slider
             value={estimate}
-            defaultValue={[5]}
             max={10}
             step={1}
             onValueChange={handleSliderChange}

@@ -9,8 +9,9 @@ const MilestoneListContainer = styled.div`
   display:flex;
   flex-direction: column;
   gap: 8px;
-  padding:8px;
+  padding:8px 16px 8px 8px;
   background-color: lightgray;
+  overflow: scroll;
 `
 
 const MilestoneContainer = styled.div`
@@ -42,10 +43,6 @@ interface IOwnProps {
 }
 
 export default function MilestoneList(props: IOwnProps) {
-
-  useEffect(() => {
-    console.log(props.milestones)
-  },[JSON.stringify(props.milestones)])
 
   const onDelete = (milestone: IMilestone) => {
     if(props.deleteMilestone){

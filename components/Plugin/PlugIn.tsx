@@ -38,7 +38,7 @@ const initialCourses: Map<number, ICourse> = new Map([
               status: Status.ongoing,
               id: 1,
               prio: Prio.p0,
-              deadline: new Date(2023,9,16),
+              // deadline: new Date(2023,9,16),
               kind: Kind.plan,
             },
             {
@@ -59,8 +59,8 @@ const initialCourses: Map<number, ICourse> = new Map([
       ],  
       [2,
         {
-          start: new Date(),
-          deadline: new Date(),
+          start: new Date(2023,10,1),
+          deadline: new Date(2023,10,14),
           name: "Assignment2",
           id: 2,
           courseName: "math",
@@ -77,7 +77,7 @@ const initialCourses: Map<number, ICourse> = new Map([
               status: Status.ongoing,
               id: 1,
               prio: Prio.p0,
-              deadline: new Date(2023,10,1),
+              // deadline: new Date(2023,10,1),
               kind: Kind.plan,
             },
             {
@@ -209,50 +209,46 @@ export default function PlugIn() {
           calculateUrgencyForAssignment(a)
         })
       })
-      console.log(courses)
     }
 
     const calculateUrgencyForAssignment = (a: IAssignment) => {
       let tmp: IAssignment = _.cloneDeep(a)
       fillDeadlines(tmp)
-      fillPrio(tmp)
+      fillPrio2(tmp)
       a.milestones.forEach((m, i) => {
         m.prio = tmp.milestones[i].prio;
       })
     }
 
-    const correctDates = (a: IAssignment) => {
-
-    }
-
     const fillDeadlines = (tmp: IAssignment) => {
-      let priorIndexWithDate = 0;
-      let counter = 1;
-      //until you have looked at all milestones
-      while(priorIndexWithDate !== tmp.milestones.length - 1){
-        //find the next milestone with a date
-        while(!tmp.milestones[priorIndexWithDate + counter].deadline){
-          counter++;
+      let priorIndexWithDate: number;
+      let counter = 0;
+      tmp.milestones.forEach((milestone, i) => {
+        if(!milestone.deadline){
+          counter++
+        } else {
+          let deadline1;
+          if(!priorIndexWithDate){
+            deadline1 = tmp.start;
+          } else {
+            deadline1 = tmp.milestones[priorIndexWithDate].deadline;
+          }
+          const deadline2 = tmp.milestones[i].deadline;
+
+          if(typeof deadline2 == 'undefined' || typeof deadline1 == 'undefined'){
+            return
+          }
+          //calc the diff between the prior date and the next date
+          let dif= getTimeDifInDays(deadline2, deadline1);
+          let steps = (dif/(counter + 1));
+          for(let ii=1;ii <= counter;ii++){
+            tmp.milestones[i - (counter - (ii - 1))].deadline = addDays(addDays(deadline1, dif/2), Math.round(steps * ii)/2)
+            console.log(tmp.milestones[i - (counter - (ii - 1))].deadline)
+          }
+          priorIndexWithDate = i;
+          counter = 0;
         }
-        const nextIndexWithDate = priorIndexWithDate + counter;
-        const deadline1 = tmp.milestones[nextIndexWithDate].deadline;
-        const deadline2 = tmp.milestones[priorIndexWithDate].deadline;
-        debugger
-        if(typeof deadline1 == 'undefined' || typeof deadline2 == 'undefined'){
-          return
-        }
-        //calc the diff between the prior date and the next date
-        let dif= getTimeDifInDays(deadline1, deadline2);
-        let d = milliSecToDays(dif)
-        let frac = d/counter;
-        //fill in all the dates for the milestones without a date
-        for(let i = 1; i < counter;i++){
-          tmp.milestones[priorIndexWithDate + i].deadline = addDays(deadline1, Math.round(frac * i))
-        }
-        //set new prior date and reset counter
-        priorIndexWithDate = nextIndexWithDate;
-        counter = 0;
-      }
+      })
     }
 
     const fillPrio = (tmp: IAssignment) => {
@@ -261,24 +257,44 @@ export default function PlugIn() {
         if(!milestone.deadline){
           return;
         }
-        let timePrior = getTimeDifInDays(tmp.start, milestone.deadline);
+        let timeBefore = getTimeDifInDays(tmp.start, milestone.deadline);
         let timeAfter = getTimeDifInDays(milestone.deadline, tmp.deadline);
-        let timeDif = getTimeDifInDays(milestone.deadline, currentDate);
+        let timeDif = getTimeDifInDays(currentDate, milestone.deadline);
         //if positive put low prio
-        let prio;
-        if(timeDif <= 0){
-          let frac = timePrior/Math.abs(timeDif)
-          prio = Math.round(frac * 5);
-        //if positive put high prio
-        } else {
-          let frac = timePrior/Math.abs(timeDif)
-          prio = Math.round(5 + (frac * 5));
+        let prio = 5;
+        let frac = 0;
+        //if 0 its p5
+        if(timeDif == 0){
+          //nothing
+        } else if (timeDif < 0) {
+          frac = Math.abs(timeDif/timeBefore);
+          prio = 5 - Math.round(4*frac)
+        } else if (timeDif > 0) {
+          frac = Math.abs(timeDif/timeAfter);
+          prio = 5 + Math.round(4*frac)
         }
         milestone.prio = getPrio(prio);
       })
     }
 
+    const fillPrio2 = (tmp: IAssignment) => {
+      //for each milestone
+      tmp.milestones.forEach((milestone) => {
+        if(!milestone.deadline){
+          return;
+        }
+        let prio = getTimeDifInDays(milestone.deadline, currentDate)
+        milestone.prio = getPrioReverse(prio);
+      })
+    }
+
     const getPrio = (prio: number) => {
+      if(prio>9){
+        prio = 9;
+      }
+      if(prio<1){
+        prio = 1;
+      }
       switch (prio) {
         case 1:
           return Prio.p1
@@ -303,6 +319,37 @@ export default function PlugIn() {
       }
     }
 
+    const getPrioReverse = (prio: number) => {
+      if(prio>9){
+        prio = 9;
+      }
+      if(prio<1){
+        prio = 1;
+      }
+      switch (prio) {
+        case 1:
+          return Prio.p9
+        case 2:
+          return Prio.p8
+        case 3:
+          return Prio.p7
+        case 4:
+          return Prio.p6
+        case 5:
+          return Prio.p5
+        case 6:
+          return Prio.p4
+        case 7:
+          return Prio.p3
+        case 8:
+          return Prio.p2
+        case 9:
+          return Prio.p1
+        default:
+          return Prio.p0;
+      }
+    }
+
     const milliSecToDays = (mil: number) => {
       return mil/(1000 * 3600 * 24)
     }
@@ -314,11 +361,8 @@ export default function PlugIn() {
     }
 
     const getTimeDifInDays = (date1: Date, date2: Date): number => {
-      console.log(date1)
-      console.log(date2)
-
-      let dif= Math.abs(date1.getTime() - date2.getTime());
-      return milliSecToDays(dif)
+      let dif= date1.getTime() - date2.getTime();
+      return Math.round(milliSecToDays(dif))
     }
 
     useEffect(() => {
@@ -338,7 +382,9 @@ export default function PlugIn() {
         }
     },[update])
 
-
+  useEffect(() => {
+      setUpdate(!update)
+  },[currentDate])
 
     return (
       <DashboardContainer>
