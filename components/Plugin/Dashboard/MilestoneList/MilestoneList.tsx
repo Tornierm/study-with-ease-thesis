@@ -53,7 +53,7 @@ export default function MilestoneList(props: IOwnProps) {
   return (
     <MilestoneListContainer>
           {props.milestones.map((milestone) => {
-              return <MilestoneContainer>
+              return <MilestoneContainer key={milestone.courseId +","+milestone.assignmentId+","+milestone.id} >
                   { !milestone.deadline && props.editable
                     ? <SortButtons>
                       <Up onClick={() => props.swapMilestoneUp ? props.swapMilestoneUp(milestone, props.milestones) : {}}>&#x25B2;</Up>
@@ -64,7 +64,6 @@ export default function MilestoneList(props: IOwnProps) {
                   <Milestone 
                     editable={props.editable} 
                     onDelete={() => onDelete(milestone)} 
-                    key={milestone.courseId +","+milestone.assignmentId+","+milestone.id} 
                     setSelectedAssignmentId={props.setSelectedAssignmentId} 
                     milestone={milestone}
                   />

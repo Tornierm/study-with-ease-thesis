@@ -60,7 +60,7 @@ export default function MilestoneManager(props: IOwnProps) {
       if(selectedMilestoneId){
         setSelectedMilestone(getMilestoneById(selectedMilestoneId, props.selectedAssignment.milestones))
       }
-    },[selectedMilestoneId]);
+    },[selectedMilestoneId, props.selectedAssignment.milestones]);
     
     return (
       <>

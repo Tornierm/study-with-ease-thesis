@@ -243,7 +243,6 @@ export default function PlugIn() {
           let steps = (dif/(counter + 1));
           for(let ii=1;ii <= counter;ii++){
             tmp.milestones[i - (counter - (ii - 1))].deadline = addDays(addDays(deadline1, dif/2), Math.round(steps * ii)/2)
-            console.log(tmp.milestones[i - (counter - (ii - 1))].deadline)
           }
           priorIndexWithDate = i;
           counter = 0;
@@ -371,7 +370,7 @@ export default function PlugIn() {
       } else {
         setSelectedAssignment(undefined)
       }
-    },[selectedAssignmentId]);
+    },[selectedAssignmentId, assignments]);
 
     useEffect(() => {
         if(update){
@@ -380,10 +379,11 @@ export default function PlugIn() {
           calculateUrgencyForCourses()
           setUpdate(false)
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     },[update])
 
   useEffect(() => {
-      setUpdate(!update)
+      setUpdate(true)
   },[currentDate])
 
     return (

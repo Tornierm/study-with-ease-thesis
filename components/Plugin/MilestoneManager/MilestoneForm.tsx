@@ -65,15 +65,14 @@ export default function MilestoneForm(props: IOwnProps) {
     setEstimate(newValue);
   };
 
-  const validate = () => {
-    if(!name){
-      setDisable(true)
-    } else {
-      setDisable(false)
-    }
-  }
-
   useEffect(() => {
+    const validate = () => {
+      if(!name){
+        setDisable(true)
+      } else {
+        setDisable(false)
+      }
+    }
     validate()
   },[name])
 
