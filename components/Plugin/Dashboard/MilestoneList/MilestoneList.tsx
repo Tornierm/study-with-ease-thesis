@@ -9,8 +9,9 @@ const MilestoneListContainer = styled.div`
   flex-direction: column;
   gap: 8px;
   padding:8px 16px 8px 8px;
-  border: 2px solid black;
+  border: 1px solid black;
   overflow: scroll;
+  background-color: white;
 `
 
 const MilestoneContainer = styled.div`

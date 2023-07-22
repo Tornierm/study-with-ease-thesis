@@ -12,9 +12,11 @@ import { es } from 'date-fns/locale';
 
 const MilestoneFormContainer = styled.div`
     border: 1px solid black;
-    border-radius: 4px;
     background-color: white;
     padding:4px;
+    display:flex;
+    flex-direction: column;
+    gap:4px;
 `
 
 const SliderContainer = styled.div`
@@ -56,14 +58,13 @@ export default function MilestoneForm(props: IOwnProps) {
       assignmentId: props.assignment.id,
       description: description,
       courseId: props.courseId,
-      deadline: deadline,
+      deadline: deadline, 
       estimate: estimate? estimate[0]: undefined,
     }
     props.addMilestone(newMilestone)
   }
 
   const handleSliderChange = (newValue: number[]) => {
-    console.log(newValue)
     setEstimate(newValue);
   };
 

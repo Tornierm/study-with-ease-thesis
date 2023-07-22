@@ -15,6 +15,7 @@ const ChartsContainer = styled.div`
   display:flex;
   flex-direction: column;
   align-items: center;
+  padding: 16px 0px;
 `
 
 
@@ -25,7 +26,7 @@ const Background = styled.div`
   justify-content: center;
   background-color: white;
   width:250px;
-  height:25%;
+  height:400px;
 `
 
 interface IOwnProps {

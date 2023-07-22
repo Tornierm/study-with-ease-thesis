@@ -7,7 +7,7 @@ import TimeWizard from "./TimeWizard/TimeWizard"
 import _ from "lodash"
 
 const DashboardContainer = styled.div`
-  height: 800px;
+  height: 600px;
   width: 600px;
   margin-top:52px;
 `
@@ -39,6 +39,7 @@ const initialCourses: Map<number, ICourse> = new Map([
               prio: Prio.p0,
               // deadline: new Date(2023,9,16),
               kind: Kind.plan,
+              tasks:[],
             },
             {
               name: "Submit",
@@ -52,6 +53,7 @@ const initialCourses: Map<number, ICourse> = new Map([
               prio: Prio.p0,
               deadline: new Date(2023,9,29),
               kind: Kind.submit,
+              tasks:[],
             },
           ],
         }
@@ -78,6 +80,7 @@ const initialCourses: Map<number, ICourse> = new Map([
               prio: Prio.p0,
               // deadline: new Date(2023,10,1),
               kind: Kind.plan,
+              tasks:[],
             },
             {
               name: "Submit",
@@ -91,6 +94,7 @@ const initialCourses: Map<number, ICourse> = new Map([
               prio: Prio.p0,
               deadline: new Date(2023,10,14),
               kind: Kind.submit,
+              tasks:[],
             },
           ],
         }

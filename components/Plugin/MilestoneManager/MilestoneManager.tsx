@@ -6,6 +6,7 @@ import { Title } from "../styled";
 import MilestoneForm from "./MilestoneForm";
 import Instructions from "./Instructions";
 import TaskManager from "./TaskManager/TaskManager";
+import Header from "../Header";
 
 const MilestoneManagerContainer = styled.div`
   height: 600px;
@@ -22,9 +23,8 @@ const MilestoneManagerContainer = styled.div`
   padding:8px;
 `
 
-const Header = styled.div`
+const PositionedHeader = styled(Header)`
   grid-area: header;
-  display:flex;
 `
 
 const newMilestone: IMilestone = {
@@ -61,20 +61,32 @@ export default function MilestoneManager(props: IOwnProps) {
     useEffect(() => {
       if(selectedMilestoneId){
         setSelectedMilestone(getMilestoneById(selectedMilestoneId, props.selectedAssignment.milestones))
+      } else {
+        setSelectedMilestoneId(undefined)
+        setSelectedMilestone(undefined)
       }
     },[selectedMilestoneId, props.selectedAssignment.milestones]);
 
     return (
       <>
-        {selectedMilestone ? 
-          <TaskManager close={() => setSelectedMilestoneId(undefined)} milestone={selectedMilestone}/> : 
-          <MilestoneManagerContainer>
-              <Header>
-                <Title>MilestoneManager</Title>
-                <div onClick={props.close}>x</div>
-              </Header>
+        {selectedMilestone 
+          ?<TaskManager close={() => setSelectedMilestoneId(undefined)} milestone={selectedMilestone}/> 
+          :<MilestoneManagerContainer>
+              <PositionedHeader
+                  return={props.close}
+                  breadcrumb={'MilestoneManager'}
+                  title={props.selectedAssignment.name}
+              />
               
-              <MilestoneList setSelectedAssignmentId={setSelectedMilestoneId} toggleDone={props.toggleDone} swapMilestoneUp={props.swapMilestoneUp} swapMilestoneDown={props.swapMilestoneDown} editable={true} deleteMilestone={props.deleteMilestone} milestones={props.selectedAssignment.milestones}/>
+              <MilestoneList 
+                setSelectedAssignmentId={setSelectedMilestoneId} 
+                toggleDone={props.toggleDone} 
+                swapMilestoneUp={props.swapMilestoneUp} 
+                swapMilestoneDown={props.swapMilestoneDown} 
+                editable={true} 
+                deleteMilestone={props.deleteMilestone} 
+                milestones={props.selectedAssignment.milestones}
+              />
               <MilestoneForm 
                 currentDate={props.currentDate}
                 addMilestone={props.addMilestone}
