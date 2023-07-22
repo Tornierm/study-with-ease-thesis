@@ -64,7 +64,7 @@ export default function Dashboard(props: IOwnProps) {
     
 
     return (
-      <MilestoneContainer color={getColor(props.milestone.prio)}>
+      <MilestoneContainer color={getColor(props.milestone)}>
             <Breadcrumbs>
                 {props.milestone.course}{">"}
                 {props.milestone.assignment}{">"}
@@ -83,7 +83,11 @@ export default function Dashboard(props: IOwnProps) {
     )
 }
 
-const getColor = (prio: Prio): string => {
+const getColor = (milestone: IMilestone): string => {
+    if(milestone.status === Status.finished){
+        return "white"
+    }
+    const prio = milestone.prio;
     if(prio == Prio.p0){
         return "white"
     } if(prio == Prio.p1){

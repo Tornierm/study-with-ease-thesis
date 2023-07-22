@@ -11,30 +11,26 @@ const ChartsContainer = styled.div`
   grid-area: charts;
   border: 2px solid black;
   overflow: scroll;
-  padding:8px;
+  gap:8px;
   display:flex;
   flex-direction: column;
   align-items: center;
-  `
+`
 
 
-const chartData = [
-  {
-    id: 1,
-    value: 2,
-  },
-  {
-    id: 2,
-    value: 3,
-  },
-  {
-    id: 3,
-    value: 4,
-  },
-]
+const Background = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  width:250px;
+  height:25%;
+`
 
 interface IOwnProps {
-  chartData: IChartData[][]
+  chartData: IChartData[][];
+  dailyScope: number;
 }
 
 
@@ -47,7 +43,7 @@ export default function Charts(props: IOwnProps) {
         {
           type: 'line' as const,
           label: 'Daily Scope',
-          data: props.chartData[0].map(d => 2),
+          data: props.chartData[0].map(d => props.dailyScope),
           backgroundColor: [
             'black',
           ],
@@ -70,21 +66,21 @@ export default function Charts(props: IOwnProps) {
     }
 
     const dayOptions = {
-      plugins: {
-        title: {
-          display: true,
-          text: 'Milestones reached per Day',
-        },
-      },
+      scales: {
+        y: {
+            suggestedMin: 2,
+            suggestedMax: 4
+        }
+      }
     };
 
     const weekOptions = {
-      plugins: {
-        title: {
-          display: true,
-          text: 'Milestones reached per Week',
-        },
-      },
+      scales: {
+        y: {
+            suggestedMin: 5,
+            suggestedMax: 10
+        }
+      }
     };
 
     const pieOptions = {
@@ -99,7 +95,6 @@ export default function Charts(props: IOwnProps) {
     const WeekData = {
       type: "bar",
       labels:props.chartData[1].map(d => d.id),
-      
       datasets: [
         {
           type: 'bar' as const,
@@ -118,26 +113,34 @@ export default function Charts(props: IOwnProps) {
 
 
 const pieData = {
-  labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+  labels:props.chartData[2].map(d => d.id),
   datasets: [
     {
       label: '# of Votes',
-      data: [12, 19, 3, 5, 2, 3],
+      data: props.chartData[2].map(d => d.value),
       backgroundColor: [
-        'rgba(255, 99, 132, 0.2)',
-        'rgba(54, 162, 235, 0.2)',
-        'rgba(255, 206, 86, 0.2)',
-        'rgba(75, 192, 192, 0.2)',
-        'rgba(153, 102, 255, 0.2)',
-        'rgba(255, 159, 64, 0.2)',
+        '#ff6384',
+        '#FFC2CF',
+        '#5299D3',
+        '#BED9EE',
+        '#5E5C6C',
+        '#BEBDC7',
+        '#202C59',
+        '#A5B2DF',
+        '#16810E',
+        '#A9F5A3',
       ],
       borderColor: [
-        'rgba(255, 99, 132, 1)',
-        'rgba(54, 162, 235, 1)',
-        'rgba(255, 206, 86, 1)',
-        'rgba(75, 192, 192, 1)',
-        'rgba(153, 102, 255, 1)',
-        'rgba(255, 159, 64, 1)',
+        '#ff6384',
+        '#ff6384',
+        '#5299D3',
+        '#5299D3',
+        '#5E5C6C',
+        '#5E5C6C',
+        '#202C59',
+        '#202C59',
+        '#16810E',
+        '#16810E',
       ],
       borderWidth: 1,
     },
@@ -147,11 +150,17 @@ const pieData = {
     return (
       <ChartsContainer>
             <Title2>Milestones per Day</Title2>
-            <Chart data={DayData} type={"bar"}></Chart>
+            <Background>
+              <Chart options={dayOptions} data={DayData} type={"bar"}></Chart>
+            </Background>
             <Title2>Milestones per Week</Title2>
-            <Chart data={WeekData} type={"bar"}></Chart>
+            <Background>
+              <Chart options={weekOptions} data={WeekData} type={"bar"}></Chart>
+            </Background>
             <Title2>Assignments per Class</Title2>
-            <Chart data={pieData} options={pieOptions} type={"pie"}></Chart>
+            <Background>
+              <Chart data={pieData} type={"pie"}></Chart>
+            </Background>
       </ChartsContainer>
     )
   }

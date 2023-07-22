@@ -6,7 +6,7 @@ import { Dispatch, SetStateAction } from "react"
 import { IChartData, IMilestone } from "../Interfaces"
 
 const DashboardContainer = styled.div`
-  height: 600px;
+  height: 800px;
   width: 600px;
   background-color: aliceblue;
   display:grid;
@@ -29,6 +29,7 @@ interface IOwnProps {
     milestones: IMilestone[];
     chartData: IChartData[][];
     toggleDone: (m:IMilestone) => void;
+    dailyScope: number;
 }
 
 
@@ -39,7 +40,7 @@ export default function Dashboard(props: IOwnProps) {
         <Title>Dashboard</Title>  
         </Header>
             <MilestoneList toggleDone={props.toggleDone} editable={false} setSelectedAssignmentId={props.setSelectedAssignmentId} milestones={props.milestones}/>
-            <Charts chartData={props.chartData}/>
+            <Charts dailyScope={props.dailyScope} chartData={props.chartData}/>
       </DashboardContainer>
     )
   }

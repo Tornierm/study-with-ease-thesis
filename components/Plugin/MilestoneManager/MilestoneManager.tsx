@@ -1,11 +1,11 @@
 import styled from "styled-components"
 import { IAssignment, IMilestone, IMilestoneData, Prio, Status } from "../Interfaces";
 import { useEffect, useState } from "react";
-import TaskManager from "./TaskManager";
 import MilestoneList from "../Dashboard/MilestoneList/MilestoneList";
 import { Title } from "../styled";
 import MilestoneForm from "./MilestoneForm";
 import Instructions from "./Instructions";
+import TaskManager from "./TaskManager/TaskManager";
 
 const MilestoneManagerContainer = styled.div`
   height: 600px;
@@ -37,6 +37,7 @@ const newMilestone: IMilestone = {
   courseId: 0,
   id: 0,
   prio: Prio.p0,
+  tasks: []
 }
 
 interface IOwnProps {
@@ -62,18 +63,18 @@ export default function MilestoneManager(props: IOwnProps) {
         setSelectedMilestone(getMilestoneById(selectedMilestoneId, props.selectedAssignment.milestones))
       }
     },[selectedMilestoneId, props.selectedAssignment.milestones]);
-    
+
     return (
       <>
         {selectedMilestone ? 
-          <TaskManager milestone={selectedMilestone}/> : 
+          <TaskManager close={() => setSelectedMilestoneId(undefined)} milestone={selectedMilestone}/> : 
           <MilestoneManagerContainer>
               <Header>
                 <Title>MilestoneManager</Title>
                 <div onClick={props.close}>x</div>
               </Header>
               
-              <MilestoneList toggleDone={props.toggleDone} swapMilestoneUp={props.swapMilestoneUp} swapMilestoneDown={props.swapMilestoneDown} editable={true} deleteMilestone={props.deleteMilestone} setSelectedAssignmentId={()=>{}} milestones={props.selectedAssignment.milestones}/>
+              <MilestoneList setSelectedAssignmentId={setSelectedMilestoneId} toggleDone={props.toggleDone} swapMilestoneUp={props.swapMilestoneUp} swapMilestoneDown={props.swapMilestoneDown} editable={true} deleteMilestone={props.deleteMilestone} milestones={props.selectedAssignment.milestones}/>
               <MilestoneForm 
                 currentDate={props.currentDate}
                 addMilestone={props.addMilestone}

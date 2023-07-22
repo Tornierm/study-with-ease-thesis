@@ -7,7 +7,7 @@ import TimeWizard from "./TimeWizard/TimeWizard"
 import _ from "lodash"
 
 const DashboardContainer = styled.div`
-  height: 600px;
+  height: 800px;
   width: 600px;
   margin-top:52px;
 `
@@ -110,6 +110,7 @@ export default function PlugIn() {
     const [milestones, setMilestones] = useState<IMilestone[]>(getMilestonesFromCourses(initialCourses, currentDate))
     const [update, setUpdate] = useState<boolean>(true);
     const [chartData, setChartData] = useState<IChartData[][]>(calculateChartData(courses, currentDate));
+    const [dailyScope, setDailyScope] = useState<number>(getScope(courses, currentDate))
 
     const swapMilestoneUp = (swappedMilestone: IMilestone, swapMilestones: IMilestone[]) => {
       let index = milestones.findIndex((milestone) => {
@@ -125,16 +126,18 @@ export default function PlugIn() {
 
     const toggleDone = (milestone: IMilestone) => {
       if(milestone.status === Status.finished){
-          milestone.status = Status.ongoing
-          milestone.completionDate = undefined;
+        milestone.status = Status.ongoing
+        milestone.completionDate = undefined;
       } else {
-          milestone.status= Status.finished
-          milestone.completionDate = new Date(JSON.parse(JSON.stringify(currentDate)));
-          console.log("toggle")
-          console.log(milestone.completionDate)
-          console.log(currentDate)
-          console.log("toggle")
-
+        milestone.status= Status.finished
+        milestone.completionDate = new Date(JSON.parse(JSON.stringify(currentDate)));
+        if(milestone.kind === Kind.submit){
+          let a = getAssignmentById(milestone.assignmentId, getAssignmentsFromCourses(courses))
+          if(!a){
+            return
+          }
+          a.finished = true;
+        }
       }
       setUpdate(true);
     }
@@ -179,7 +182,8 @@ export default function PlugIn() {
         assignment: assignment.name,
         course: course.name,
         id: id,
-        prio: Prio.p0
+        prio: Prio.p0,
+        tasks: []
       }
       if(!newMilestone.deadline){
         //put before submission
@@ -348,7 +352,7 @@ export default function PlugIn() {
           setAssignments(getAssignmentsFromCourses(courses))
           calculateUrgencyForCourses()
           setChartData(calculateChartData(courses, currentDate))
-          console.log(chartData)
+          setDailyScope(getScope(courses, currentDate))
           setUpdate(false)
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -373,7 +377,7 @@ export default function PlugIn() {
               swapMilestoneDown={swapMilestoneDown}
               toggleDone={toggleDone}
             /> 
-            : <Dashboard chartData={chartData} toggleDone={toggleDone} setSelectedAssignmentId={setSelectedAssignmentId} milestones={milestones}/>
+            : <Dashboard dailyScope={dailyScope} chartData={chartData} toggleDone={toggleDone} setSelectedAssignmentId={setSelectedAssignmentId} milestones={milestones}/>
           }
           <TimeWizard setDate={setCurrentDate} date={currentDate}/>
       </DashboardContainer>
@@ -458,8 +462,6 @@ const getMilestonesFromCourses = (courses: Map<number, ICourse>, currentDate: Da
   return milestones;
 }
 const calculateChartData = (courses: Map<number, ICourse>, currentDate: Date): IChartData[][] => {
-  console.log("calculateChartData")
-
   let days = {
     1: addDays(currentDate, -4),
     2: addDays(currentDate, -3),
@@ -475,6 +477,33 @@ const calculateChartData = (courses: Map<number, ICourse>, currentDate: Date): I
     4: getWeek(addDays(currentDate, -7)),
     5: getWeek(addDays(currentDate, -0)),
   }
+
+  const getCourseData = (): IChartData[] => {
+    let courseData:IChartData[] = []
+    courses.forEach((c) => {
+      let numberOnGoing = 0;
+      let numberFinished = 0;
+      c.assignments.forEach((a) => {
+        if(a.finished){
+          numberFinished++;
+        } else {
+          numberOnGoing++;
+        }
+      })
+      const finished: IChartData = {
+        id: c.name + " finished",
+        value: numberFinished,
+      }
+      const onGoing: IChartData = {
+        id: c.name + " ongoing",
+        value: numberOnGoing,
+      }
+      courseData.push(finished)
+      courseData.push(onGoing)
+    })
+    return courseData
+  }
+  
 
   let chartData:IChartData[][] =[
     [
@@ -521,9 +550,7 @@ const calculateChartData = (courses: Map<number, ICourse>, currentDate: Date): I
         value: getValueForWeek(weeks[5], courses),
       },
     ],
-    [
-      
-    ]
+    getCourseData()
   ];
   return chartData;
 }
@@ -552,8 +579,6 @@ const getValueForWeek = (week: number, courses: Map<number, ICourse>): number =>
     c.assignments.forEach((a) => {
       a.milestones.forEach((m) => {
         if(m.completionDate){
-          console.log(week)
-          console.log(getWeek(m.completionDate))
           if(week == getWeek(m.completionDate)){
             value = value + 1
           }
@@ -561,7 +586,6 @@ const getValueForWeek = (week: number, courses: Map<number, ICourse>): number =>
       })
     })
   })
-  console.log(value)
   return value
 }
 
@@ -575,4 +599,23 @@ const getWeek = (d: Date) => {
   // Adjust to Thursday in week 1 and count number of weeks from date to week1.
   return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000
                         - 3 + (week1.getDay() + 6) % 7) / 7);
+}
+
+const getScope = (courses: Map<number, ICourse>, currentDate: Date): number => {
+  let scope = 0;
+  courses.forEach((c) => {
+    c.assignments.forEach((a) => {
+      if(a.start < currentDate && currentDate < a.deadline){
+        let milestoneNumber = a.milestones.length;
+        let days = Math.abs(getTimeDifInDays(a.start, a.deadline))
+        let ratio = milestoneNumber/days;
+        scope = scope + ratio;
+      }
+    })
+  })
+  scope = Math.round(scope);
+  if(scope < 1){
+    scope = 1;
+  }
+  return scope
 }

@@ -45,7 +45,7 @@ export default function MilestoneForm(props: IOwnProps) {
   const [description, setDescription] = useState<string>("")
   const [deadline, setDeadline] = useState<Date>()
   const [estimate, setEstimate] = useState<number[] | undefined>()
-  const [disable, setDisable] = useState<boolean>(false)
+  const [disable, setDisable] = useState<boolean>(true)
 
   const handleClick = () => {
     if(!name){

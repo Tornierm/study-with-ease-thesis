@@ -5,13 +5,12 @@ export interface ICourse {
 }
     
 export interface IAssignment extends IAssignmentData{
-    id:number;
-    // instructions: string;
-    // material: string;
+    id: number;
     courseName: string;
     courseId: number;
-    milestones:IMilestone[];
+    milestones: IMilestone[];
     counter: number;
+    finished?: boolean;
 } 
 
 export interface IChartData {
@@ -35,6 +34,7 @@ export interface IMilestone extends IMilestoneData {
     prio: Prio;
     completionDate?: Date;
     kind?: Kind;
+    tasks: ITask[];
 }
 
 export interface IMilestoneData {
@@ -48,9 +48,7 @@ export interface IMilestoneData {
 
 export interface ITask {
     status: Status;
-    name: string ;
-    id: number;
-    completiondate?: Date;
+    name: string;
 }
 
 export enum Status {
