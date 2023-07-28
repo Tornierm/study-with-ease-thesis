@@ -7,8 +7,9 @@ import Header from '../../Header'
 
 const TaskManagerContainer = styled.div`
   height: 600px;
-  width: 600px;
-  background-color: aliceblue;
+  width: 100%;
+  max-width: 800px;
+  background-color: white;
   display:grid;
   grid-template-areas:
     "header header"

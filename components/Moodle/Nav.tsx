@@ -54,6 +54,7 @@ const NavBar = styled.nav`
   z-index: 1030;
   height: 50px;
   background-color: #CCD6E0!important;
+  grid-area: header;
 `
 const Left = styled.ul`
         -webkit-text-size-adjust: 100%;

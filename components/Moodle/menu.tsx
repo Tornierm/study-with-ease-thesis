@@ -1,7 +1,6 @@
 import styled from "styled-components"
 import Image from 'next/image'
 import courseList from '../../public/courseList.png'
-import { useState } from "react"
 
 const Container = styled.div`
         -webkit-text-size-adjust: 100%;
@@ -43,7 +42,6 @@ const Container = styled.div`
     text-align: left;
     box-sizing: border-box;
     width: 285px;
-    top: 50px;
     height: calc(100% - 50px);
     overflow-y: auto;
     z-index: 999;
@@ -52,6 +50,8 @@ const Container = styled.div`
     left: 0;
     padding: 0;
     background-color: #F2F4F6;
+    grid-area: menu;
+    margin-right: 24px;
 `
 
 export default function Menu() {

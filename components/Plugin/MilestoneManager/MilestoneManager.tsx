@@ -10,8 +10,9 @@ import Header from "../Header";
 
 const MilestoneManagerContainer = styled.div`
   height: 600px;
-  width: 600px;
-  background-color: aliceblue;
+  width:100%;
+  max-width: 800px;
+  background-color: white;
   display:grid;
   grid-template-areas:
     "header header"
@@ -94,7 +95,7 @@ export default function MilestoneManager(props: IOwnProps) {
                 courseId={props.selectedAssignment.courseId}
                 assignment={props.selectedAssignment} 
               />
-              <Instructions/>
+              <Instructions assignment={props.selectedAssignment}/>
           </MilestoneManagerContainer>
         }
       </>    

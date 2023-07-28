@@ -5,12 +5,16 @@ import { Title2 } from '../../styled';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
 
 const TaskFormContainer = styled.div`
     border: 1px solid black;
     border-radius: 4px;
     background-color: white;
     padding:4px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 `
 
 const FormTitle = styled(Title2)`
@@ -28,6 +32,8 @@ interface IOwnProps {
 
 export default function MilestoneForm(props: IOwnProps) {
   const [name, setName] = useState<string | undefined>()
+  const [description, setDescription] = useState<string | undefined>()
+
   const [disable, setDisable] = useState<boolean>(true)
 
   const handleClick = () => {
@@ -36,6 +42,7 @@ export default function MilestoneForm(props: IOwnProps) {
     }
     const newTask: ITask = {
       name: name,
+      description: description,
       status: Status.ongoing,
     }
     props.addTask(newTask)
@@ -56,8 +63,14 @@ export default function MilestoneForm(props: IOwnProps) {
   return (
     <TaskFormContainer>
         <FormTitle>TaskForm</FormTitle>
-        <Label htmlFor="name">Name</Label>
-        <Input onChange={(e) => setName(e.target.value)} type="text" id="name" placeholder='name'></Input>
+        <div>
+          <Label htmlFor="name">Name</Label>
+          <Input onChange={(e) => setName(e.target.value)} type="text" id="name" placeholder='name'></Input>
+        </div>
+        <div>
+          <Label htmlFor="description">Name</Label>
+          <Textarea onChange={(e) => setDescription(e.target.value)} id="description" placeholder='description'></Textarea>
+        </div>
         <ButtonContainer>
           <Button disabled={disable} onClick={handleClick}>Create</Button>
         </ButtonContainer>

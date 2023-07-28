@@ -9,7 +9,7 @@ ChartJS.register(
 
 const ChartsContainer = styled.div`
   grid-area: charts;
-  border: 2px solid black;
+  border: 1px solid black;
   overflow: scroll;
   gap:8px;
   display:flex;

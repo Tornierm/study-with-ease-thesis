@@ -1,23 +1,33 @@
 import React, { Dispatch, SetStateAction } from 'react'
 import styled from 'styled-components'
-import { Title2 } from '../styled';
+import { Title, Title2 } from '../styled';
 
 const TimeWizardContainer = styled.div`
-    height:100px;
-    width: 600px;
+    height:600px;
+    width: 100%;
     border: 2px solid black;
-    position: relative;
-    top: 50px;
     border-radius: 50px;
+    grid-area: wizard;
     display:grid;
     grid-template-areas: 
-        "left title title title title right"
-        "left backward date date forward right";
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+        "title title title title"
+        "reset reset reset reset"
+        "text text text text"
+        "backward date date forward";
+    grid-template-columns:1fr 1fr 1fr 1fr;
+    grid-template-rows:50px 50px 1fr 50px;
     padding:8px;
     justify-content:center;
+    margin: 24px;
 `
-const Title = styled(Title2)`
+
+const Story =styled.div`
+    grid-area: text;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+`
+const StyledTitle = styled(Title)`
     display:flex;
     justify-content: center;
     align-items: center;
@@ -43,10 +53,18 @@ const Backward = styled.div`
     justify-content: center;
     align-items: center;
 `
+const Reset = styled.div`
+    grid-area: reset;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+`
 
 interface IOwnProps {
     date: Date;
     setDate: Dispatch<SetStateAction<Date>>;
+    setReset: any;
+    reset:boolean;
 }
 
 export default function TimeWizard(props: IOwnProps) {
@@ -66,10 +84,20 @@ export default function TimeWizard(props: IOwnProps) {
 
   return (
     <TimeWizardContainer>
-        <Title>TimeWizard</Title>
+        <StyledTitle>TimeWizard</StyledTitle>
+        <Reset onClick={() => props.setReset(!props.reset)}>Reset</Reset>
+        <Story>{getStory(props.date)}</Story>
         <DateTime>{props.date.toDateString()}</DateTime>
         <Forward onClick={increaseDate}>{">>"}</Forward>
         <Backward onClick={decreaseDate}>{"<<"}</Backward>
     </TimeWizardContainer>
   )
+}
+
+const getStory = (date: Date) => {
+    if(date.getTime() === new Date(2023,9,16).getTime()){
+       return "hello world"
+    } else {
+        return 'something else'
+    }
 }

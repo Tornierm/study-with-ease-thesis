@@ -1,15 +1,18 @@
+"use client"
+
 import styled from "styled-components"
 import Dashboard from "./Dashboard/Dashboard"
 import { useEffect, useState } from "react"
 import { IAssignment, IChartData, ICourse, IMilestone, IMilestoneData, Kind, Prio, Status } from "./Interfaces"
 import MilestoneManager from "./MilestoneManager/MilestoneManager"
-import TimeWizard from "./TimeWizard/TimeWizard"
 import _ from "lodash"
+import menu from "../../public/menu.png"
 
 const DashboardContainer = styled.div`
   height: 600px;
-  width: 600px;
-  margin-top:52px;
+  width: 100%;
+  margin: 24px 0;
+  grid-area: plugin;
 `
 
 const initialCourses: Map<number, ICourse> = new Map([
@@ -26,6 +29,8 @@ const initialCourses: Map<number, ICourse> = new Map([
           courseName: "math",
           courseId: 1,
           counter: 3,
+          instructions: menu,
+          material: [menu, menu, menu],
           milestones: [
             {
               name: "Plan",
@@ -67,6 +72,8 @@ const initialCourses: Map<number, ICourse> = new Map([
           courseName: "math",
           courseId: 2,
           counter: 3,
+          instructions: menu,
+          material: [menu, menu, menu],
           milestones: [
             {
               name: "Plan",
@@ -103,23 +110,68 @@ const initialCourses: Map<number, ICourse> = new Map([
   }]
 ])
 
-const InitialDate = new Date(2023,9,16)
+interface IOwnProps {
+  currentDate: Date,
+  setCurrentDate: any;
+  reset: boolean;
+  setReset: any;
+}
 
-export default function PlugIn() {
-    const [currentDate, setCurrentDate] = useState<Date>(InitialDate);
+export default function PlugIn(props: IOwnProps) {
+  const getCourses = (): Map<number, ICourse> => {
+    let stringed;
+    if (typeof window !== 'undefined') {
+      stringed = localStorage.getItem("study-with-ease")
+    }
+    if(stringed) {
+      const tmp: Map<number, ICourse>= new Map(JSON.parse(stringed))
+      tmp.forEach((c) => {
+        c.assignments = new Map(c.assignments)
+      })
+      tmp.forEach((course) => {
+        course.assignments.forEach((a) => {
+          a.deadline = new Date(a.deadline)
+          a.start = new Date(a.start)
+          a.milestones.forEach(m => {
+            m.completionDate = m.completionDate ? new Date(m.completionDate) : undefined;
+            m.deadline = m.deadline ? new Date(m.deadline) : undefined;
+          });
+        })
+      })
+      return tmp;
+    } else {
+      return _.cloneDeep(initialCourses)
+    }
+  }
+
+  const putCourses = () => {
+    let tmp: any = _.cloneDeep(courses)
+    tmp.forEach((c: any) => {
+      c.assignments = Array.from(c.assignments.entries())
+    })
+    let stringed = JSON.stringify(Array.from(tmp.entries()))
+    if (typeof window !== 'undefined') {
+      // Perform localStorage action
+      localStorage.setItem("study-with-ease", stringed)
+    }
+  }
+
     const [selectedAssignmentId, setSelectedAssignmentId] = useState<number | undefined>(undefined)
     const [selectedAssignment, setSelectedAssignment] = useState<IAssignment | undefined>(undefined)
     const [assignments, setAssignments] = useState<IAssignment[]>(getAssignmentsFromCourses(initialCourses))
-    const [courses] = useState<Map<number, ICourse>>(initialCourses)
-    const [milestones, setMilestones] = useState<IMilestone[]>(getMilestonesFromCourses(initialCourses, currentDate))
+    const [courses, setCourses] = useState<Map<number, ICourse>>(getCourses())
+    const [milestones, setMilestones] = useState<IMilestone[]>(getMilestonesFromCourses(initialCourses, props.currentDate))
     const [update, setUpdate] = useState<boolean>(true);
-    const [chartData, setChartData] = useState<IChartData[][]>(calculateChartData(courses, currentDate));
-    const [dailyScope, setDailyScope] = useState<number>(getScope(courses, currentDate))
-
+    const [chartData, setChartData] = useState<IChartData[][]>(calculateChartData(courses, props.currentDate));
+    const [dailyScope, setDailyScope] = useState<number>(getScope(courses, props.currentDate))
+    
     const swapMilestoneUp = (swappedMilestone: IMilestone, swapMilestones: IMilestone[]) => {
       let index = milestones.findIndex((milestone) => {
         return milestone.id === swappedMilestone.id;
       })
+      if(index === 0){
+        return
+      }
       let swapindex = index - 1;
       if(!(typeof swapMilestones[swapindex].kind !== 'undefined')){
         if(swapMilestones[swapindex].kind !== (Kind.plan || Kind.submit)){
@@ -134,7 +186,7 @@ export default function PlugIn() {
         milestone.completionDate = undefined;
       } else {
         milestone.status= Status.finished
-        milestone.completionDate = new Date(JSON.parse(JSON.stringify(currentDate)));
+        milestone.completionDate = new Date(JSON.parse(JSON.stringify(props.currentDate)));
         if(milestone.kind === Kind.submit){
           let a = getAssignmentById(milestone.assignmentId, getAssignmentsFromCourses(courses))
           if(!a){
@@ -244,6 +296,8 @@ export default function PlugIn() {
       })
     }
 
+   
+
     const fillDeadlines = (tmp: IAssignment) => {
       let priorIndexWithDate: number;
       let counter = 0;
@@ -282,7 +336,7 @@ export default function PlugIn() {
         }
         let timeBefore = getTimeDifInDays(tmp.start, milestone.deadline);
         let timeAfter = getTimeDifInDays(milestone.deadline, tmp.deadline);
-        let timeDif = getTimeDifInDays(currentDate, milestone.deadline);
+        let timeDif = getTimeDifInDays(props.currentDate, milestone.deadline);
         //if positive put low prio
         let prio = 5;
         let frac = 0;
@@ -306,7 +360,7 @@ export default function PlugIn() {
         if(!milestone.deadline){
           return;
         }
-        let prio = getTimeDifInDays(milestone.deadline, currentDate)
+        let prio = getTimeDifInDays(milestone.deadline, props.currentDate)
         milestone.prio = getPrioReverse(prio);
       })
     }
@@ -352,27 +406,37 @@ export default function PlugIn() {
 
     useEffect(() => {
         if(update){
-          setMilestones(getMilestonesFromCourses(courses, currentDate))
+          setMilestones(getMilestonesFromCourses(courses, props.currentDate))
           setAssignments(getAssignmentsFromCourses(courses))
           calculateUrgencyForCourses()
-          setChartData(calculateChartData(courses, currentDate))
-          setDailyScope(getScope(courses, currentDate))
+          setChartData(calculateChartData(courses, props.currentDate))
+          setDailyScope(getScope(courses, props.currentDate))
+          putCourses()
           setUpdate(false)
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[update])
+    },[update, courses])
 
   useEffect(() => {
       setUpdate(!update)
       // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[currentDate])
+  },[props.currentDate])
+
+  useEffect(() => {
+    if(props.reset == true){
+      const tmp = _.cloneDeep(initialCourses)
+      setCourses(tmp)
+      setUpdate(true)
+      props.setReset(false)
+    } 
+  }, [props.reset])
 
     return (
       <DashboardContainer>
           {
             selectedAssignment
             ?<MilestoneManager 
-              currentDate={currentDate}
+              currentDate={props.currentDate}
               close={() => setSelectedAssignmentId(undefined)} 
               selectedAssignment={selectedAssignment}
               addMilestone={addMilestoneToAssignment}
@@ -383,7 +447,6 @@ export default function PlugIn() {
             /> 
             : <Dashboard dailyScope={dailyScope} chartData={chartData} toggleDone={toggleDone} setSelectedAssignmentId={setSelectedAssignmentId} milestones={milestones}/>
           }
-          <TimeWizard setDate={setCurrentDate} date={currentDate}/>
       </DashboardContainer>
     )
   }

@@ -22,9 +22,11 @@ const MilestoneContainer = styled.div`
 
 const Name = styled(Title2)`
     grid-area: title;
+    text-align: left;
 `
 
 const Breadcrumbs = styled(SubTitle)`
+    text-align: left;
     grid-area: breadcrumbs;
 `
 

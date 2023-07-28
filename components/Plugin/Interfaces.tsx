@@ -1,3 +1,5 @@
+import { StaticImageData } from "next/image";
+
 export interface ICourse {
     name: string;
     id:number;
@@ -13,18 +15,20 @@ export interface IAssignment extends IAssignmentData{
     finished?: boolean;
 } 
 
-export interface IChartData {
-    id: string;
-    value: number;
-}
-
 export interface IAssignmentData {
     start: Date;
     deadline: Date;
     name:string;
+    instructions: StaticImageData;
+    material: StaticImageData[];
     // instructions: string;
     // material: string;
 } 
+
+export interface IChartData {
+    id: string;
+    value: number;
+}
     
 export interface IMilestone extends IMilestoneData {
     status: Status;
@@ -49,6 +53,7 @@ export interface IMilestoneData {
 export interface ITask {
     status: Status;
     name: string;
+    description?: string;
 }
 
 export enum Status {

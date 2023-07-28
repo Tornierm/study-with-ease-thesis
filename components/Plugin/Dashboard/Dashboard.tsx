@@ -7,8 +7,9 @@ import Header from "../Header"
 
 const DashboardContainer = styled.div`
   height: 600px;
-  width: 600px;
-  background-color: aliceblue;
+  width: 100%;
+  max-width: 800px;
+  background-color: white;
   display:grid;
   grid-template-areas:
     "header header"
@@ -34,9 +35,7 @@ export default function Dashboard(props: IOwnProps) {
       <DashboardContainer>
         <Header
           title={"Dashboard"}
-        />
-        {/* <StyledHeader></StyledHeader> */}
-        
+        />        
         <MilestoneList toggleDone={props.toggleDone} editable={false} setSelectedAssignmentId={props.setSelectedAssignmentId} milestones={props.milestones}/>
         <Charts dailyScope={props.dailyScope} chartData={props.chartData}/>
       </DashboardContainer>
