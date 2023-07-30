@@ -25,7 +25,7 @@ const Container = styled.div`
   align-items: center;
 `
 
-const InitialDate = new Date(2023,9,16)
+const InitialDate = new Date(2023,9,15)
 
 export default function Home() {
 
