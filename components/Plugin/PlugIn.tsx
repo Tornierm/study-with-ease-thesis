@@ -340,6 +340,7 @@ export default function PlugIn(props: IOwnProps) {
     if(props.reset == true){
       const tmp = _.cloneDeep(initialCourses)
       setCourses(tmp)
+      setSelectedAssignmentId(undefined)
       setUpdate(!update)
       props.setReset(false)
     } 

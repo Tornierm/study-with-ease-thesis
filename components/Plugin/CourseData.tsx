@@ -1,4 +1,9 @@
 import menu from "../../public/menu.png"
+import math from "../../public/math.png"
+import marketing from "../../public/marketing.png"
+import metaphysics from "../../public/metaphysics.png"
+import philosophy from "../../public/philosophy.png"
+
 import { IAssignmentData, ICourse, ICourseData, IMilestoneData, Kind, Prio, Status } from "./Interfaces"
 
 const createCourseFromData = (data: ICourseData) => {
@@ -26,8 +31,8 @@ const Math: ICourse = {
         courseName: "Math",
         courseId: 1,
         counter: 5,
-        instructions: menu,
-        material: [menu, menu, menu],
+        instructions: math,
+        material: [],
         milestones: [
           {
             name: "Solve Section 1",
@@ -187,7 +192,7 @@ const Metaphysics: ICourse = {
         courseName: "Metaphysics",
         courseId: 2,
         counter: 3,
-        instructions: menu,
+        instructions: metaphysics,
         material: [menu, menu, menu],
         milestones: [
           {
@@ -317,17 +322,17 @@ const IntroToPhilosophy: ICourse = {
     [1,
       {
         start: new Date(2023,9,18),
-        deadline: new Date(2023,10,8),
+        deadline: new Date(2023,11,6),
         name: "Philosophy Assignment 1",
         id: 1,
         courseName: "Philosophy",
         courseId: 3,
-        counter: 3,
-        instructions: menu,
+        counter: 8,
+        instructions: philosophy,
         material: [menu, menu, menu],
         milestones: [
           {
-            name: "Plan",
+            name: "Research and Gather Information",
             description: "",
             assignment: "Philosophy Assignment 1",
             assignmentId: 1,
@@ -337,7 +342,88 @@ const IntroToPhilosophy: ICourse = {
             id: 1,
             prio: Prio.p0,
             // deadline: new Date(2023,9,16),
-            kind: Kind.plan,
+            tasks:[
+              {
+                name: "Read \"A Theory of Justice\" by John Rawls",
+                status: Status.ongoing,
+              },
+              {
+                name: "Read \"Justice as Fairness: A Restatement\" by John Rawls",
+                status: Status.ongoing,
+              },
+              {
+                name: "Read \"Justice: What's the Right Thing to Do?\" by Michael J. Sandel:",
+                status: Status.ongoing,
+              },
+              {
+                name: "Read \"Rawls: A Theory of Justice and Its Critics\" by Chandran Kukathas and Philip Pettit",
+                status: Status.ongoing,
+              },
+            ],
+          },
+          {
+            name: "Create an Outline",
+            description: "",
+            assignment: "Philosophy Assignment 1",
+            assignmentId: 1,
+            courseId: 3,
+            course: "Philosophy",
+            status: Status.ongoing,
+            id: 2,
+            prio: Prio.p0,
+            // deadline: new Date(2023,9,16),
+            tasks:[],
+          },
+          {
+            name: "Write the Introduction",
+            description: "",
+            assignment: "Philosophy Assignment 1",
+            assignmentId: 1,
+            courseId: 3,
+            course: "Philosophy",
+            status: Status.ongoing,
+            id: 3,
+            prio: Prio.p0,
+            // deadline: new Date(2023,9,16),
+            tasks:[],
+          },
+          {
+            name: "Write the Body Paragraphs",
+            description: "",
+            assignment: "Philosophy Assignment 1",
+            assignmentId: 1,
+            courseId: 3,
+            course: "Philosophy",
+            status: Status.ongoing,
+            id: 4,
+            prio: Prio.p0,
+            // deadline: new Date(2023,9,16),
+            tasks:[],
+          },
+          {
+            name: "Write the Conclusion",
+            description: "",
+            assignment: "Philosophy Assignment 1",
+            assignmentId: 1,
+            courseId: 3,
+            course: "Philosophy",
+            status: Status.ongoing,
+            id: 5,
+            prio: Prio.p0,
+            // deadline: new Date(2023,9,16),
+            tasks:[],
+          },
+          {
+            name: "Edit and Proofread",
+            description: "",
+            assignment: "Philosophy Assignment 1",
+            assignmentId: 1,
+            courseId: 3,
+            course: "Philosophy",
+            status: Status.ongoing,
+            id: 6,
+            prio: Prio.p0,
+            // deadline: new Date(2023,9,16),
             tasks:[],
           },
           {
@@ -348,10 +434,10 @@ const IntroToPhilosophy: ICourse = {
             courseId: 3,
             course: "Philosophy",
             status: Status.ongoing,
-            id: 2,
+            kind:Kind.submit,
+            id: 7,
             prio: Prio.p0,
-            deadline: new Date(2023,10,8),
-            kind: Kind.submit,
+            deadline: new Date(2023,11,6),
             tasks:[],
           },
         ],
@@ -359,8 +445,8 @@ const IntroToPhilosophy: ICourse = {
     ],  
     [2,
       {
-        start: new Date(2023,10,8),
-        deadline: new Date(2023,10,29),
+        start: new Date(2023,11,6),
+        deadline: new Date(2023,1,31),
         name: "Philosophy Assignment 2",
         id: 2,
         courseName: "Philosophy",
@@ -380,7 +466,6 @@ const IntroToPhilosophy: ICourse = {
             id: 1,
             prio: Prio.p0,
             // deadline: new Date(2023,10,1),
-            kind: Kind.plan,
             tasks:[],
           },
           {
@@ -400,49 +485,6 @@ const IntroToPhilosophy: ICourse = {
         ],
       }
     ], 
-    [3,
-      {
-        start: new Date(2023,10,29),
-        deadline: new Date(2023,11,20),
-        name: "Philosophy Assignment 3",
-        id: 3,
-        courseName: "Philosophy",
-        courseId: 3,
-        counter: 3,
-        instructions: menu,
-        material: [menu, menu, menu],
-        milestones: [
-          {
-            name: "Plan",
-            description: "",
-            assignment: "Philosophy Assignment 3",
-            assignmentId: 3,
-            courseId: 3,
-            course: "Philosophy",
-            status: Status.ongoing,
-            id: 1,
-            prio: Prio.p0,
-            // deadline: new Date(2023,9,16),
-            kind: Kind.plan,
-            tasks:[],
-          },
-          {
-            name: "Submit",
-            description: "",
-            assignment: "Philosophy Assignment 3",
-            assignmentId: 3,
-            courseId: 3,
-            course: "Philosophy",
-            status: Status.ongoing,
-            id: 2,
-            prio: Prio.p0,
-            deadline: new Date(2023,11,20),
-            kind: Kind.submit,
-            tasks:[],
-          },
-        ],
-      }
-    ],  
   ])
 }
 
@@ -459,7 +501,7 @@ const Marketing: ICourse = {
         courseName: "Marketing",
         courseId: 4,
         counter: 3,
-        instructions: menu,
+        instructions: marketing,
         material: [menu, menu, menu],
         milestones: [
           {
@@ -543,5 +585,5 @@ export const initialCourses: Map<number, ICourse> = new Map([
   [1, Math],
   [2, Metaphysics],
   [3, IntroToPhilosophy],
-  [4, Marketing]
+  // [4, Marketing]
   ])

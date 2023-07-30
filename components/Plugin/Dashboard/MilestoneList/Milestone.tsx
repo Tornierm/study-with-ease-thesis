@@ -15,12 +15,13 @@ const MilestoneContainer = styled.div`
   grid-template-areas: "nothing breadcrumbs breadcrumbs breadcrumbs breadcrumbs delete"
                         "checkbox title title title title manage"
                         "free deadline deadline deadline deadline none";
-  grid-template-rows: 1fr 1fr 1fr;
+  grid-template-rows: auto 1fr auto;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 20px;
   gap:0px 8px;
 `
 
 const Name = styled(Title2)`
+    font-size: 16px;
     grid-area: title;
     text-align: left;
 `

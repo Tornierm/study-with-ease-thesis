@@ -18,7 +18,6 @@ const ChartsContainer = styled.div`
   padding: 16px 0px;
 `
 
-
 const Background = styled.div`
   display: flex;
   flex-direction: column;
@@ -32,7 +31,6 @@ interface IOwnProps {
   chartData: IChartData[][];
   dailyScope: number;
 }
-
 
 export default function Charts(props: IOwnProps) {
 

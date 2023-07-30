@@ -11,11 +11,11 @@ const TaskContainer = styled.div`
   display:grid;
   border-radius: 4px;
   border:1px solid black;
-  grid-template-areas: "nothing breadcrumbs breadcrumbs breadcrumbs breadcrumbs delete"
+  grid-template-areas: "nothing title title title title delete"
                         "checkbox title title title title manage"
                         "checkbox description description description description manage"
-                        "free deadline deadline deadline deadline none";
-  grid-template-rows: 1fr 1fr 1fr;
+                        ;
+  grid-template-rows: auto 1fr auto;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 20px;
   gap:0px 8px;
   background-color: lightgray;
@@ -24,6 +24,7 @@ const TaskContainer = styled.div`
 const Name = styled(Title2)`
     text-align: left;
     grid-area: title;
+    font-size: 14px;
 `
 
 const Description = styled(SubTitle)`
