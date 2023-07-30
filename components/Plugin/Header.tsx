@@ -11,7 +11,7 @@ const HeaderContainer = styled.div`
         "no no nothing"
         ;
     grid-template-rows: 10px 1fr 10px;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 80px 1fr 80px;
 `
 
 const GridTitle = styled(Title)`

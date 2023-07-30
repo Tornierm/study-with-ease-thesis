@@ -5,12 +5,16 @@ export interface ICourse {
     id:number;
     assignments:Map<number, IAssignment>;
 }
+
+export interface ICourseData {
+    name: string;
+    assignments:IAssignment[];
+}
     
 export interface IAssignment extends IAssignmentData{
     id: number;
     courseName: string;
     courseId: number;
-    milestones: IMilestone[];
     counter: number;
     finished?: boolean;
 } 
@@ -21,6 +25,7 @@ export interface IAssignmentData {
     name:string;
     instructions: StaticImageData;
     material: StaticImageData[];
+    milestones: IMilestone[];
     // instructions: string;
     // material: string;
 } 
@@ -37,6 +42,7 @@ export interface IMilestone extends IMilestoneData {
     id: number;
     prio: Prio;
     completionDate?: Date;
+    tmpDeadline?: Date;
     kind?: Kind;
     tasks: ITask[];
 }

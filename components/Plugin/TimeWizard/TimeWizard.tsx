@@ -4,7 +4,8 @@ import { Title, Title2 } from '../styled';
 
 const TimeWizardContainer = styled.div`
     height:600px;
-    width: 100%;
+    width: 80%;
+    max-width: 400px;
     border: 2px solid black;
     border-radius: 50px;
     grid-area: wizard;
@@ -35,6 +36,8 @@ const StyledTitle = styled(Title)`
 `
 const DateTime = styled(Title2)`
     grid-area: date;
+    width:180px;
+    overflow:scroll;
     display:flex;
     justify-content: center;
     align-items: center;
@@ -62,10 +65,12 @@ const Reset = styled.div`
 
 interface IOwnProps {
     date: Date;
-    setDate: Dispatch<SetStateAction<Date>>;
+    setDate: (date: Date) => void;
     setReset: any;
     reset:boolean;
 }
+
+const InitialDate = new Date(2023,9,16)
 
 export default function TimeWizard(props: IOwnProps) {
 
@@ -82,10 +87,15 @@ export default function TimeWizard(props: IOwnProps) {
         return result;
      }
 
+     const onReset = () => {
+        props.setDate(InitialDate)
+        props.setReset(!props.reset)
+     }
+
   return (
     <TimeWizardContainer>
         <StyledTitle>TimeWizard</StyledTitle>
-        <Reset onClick={() => props.setReset(!props.reset)}>Reset</Reset>
+        <Reset onClick={onReset}>Reset</Reset>
         <Story>{getStory(props.date)}</Story>
         <DateTime>{props.date.toDateString()}</DateTime>
         <Forward onClick={increaseDate}>{">>"}</Forward>
@@ -96,8 +106,8 @@ export default function TimeWizard(props: IOwnProps) {
 
 const getStory = (date: Date) => {
     if(date.getTime() === new Date(2023,9,16).getTime()){
-       return "hello world"
+       return <>{"hello world"}</>
     } else {
-        return 'something else'
+        return <>{"something else"}</>
     }
 }

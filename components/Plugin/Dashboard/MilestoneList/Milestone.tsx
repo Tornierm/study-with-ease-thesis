@@ -56,7 +56,7 @@ const Manage = styled.div`
 
 interface IOwnProps {
     milestone: IMilestone;
-    setSelectedAssignmentId: Dispatch<SetStateAction<number | undefined>>;
+    setAssignmentAndCourseId: () => void;
     onDelete: () => void;
     toggleDone: (m: IMilestone) => void;
     editable: boolean;
@@ -64,7 +64,6 @@ interface IOwnProps {
 
 export default function Dashboard(props: IOwnProps) {
     
-
     return (
       <MilestoneContainer color={getColor(props.milestone)}>
             <Breadcrumbs>
@@ -77,7 +76,7 @@ export default function Dashboard(props: IOwnProps) {
                 {props.milestone.estimate && <SpaceBetween><div>{"Estimate:"}</div><div>{props.milestone.estimate}</div></SpaceBetween>}
             </Deadline>
             <Box onCheckedChange={() => props.toggleDone(props.milestone)} checked={props.milestone.status === Status.finished}/>
-            <Manage onClick={() => props.setSelectedAssignmentId(props.milestone.assignmentId)}>{">"}</Manage>
+            <Manage onClick={(e) => props.setAssignmentAndCourseId()}>{">"}</Manage>
         {
             props.editable && (typeof props.milestone.kind == 'undefined') ? <Delete onClick={props.onDelete}>x</Delete>:<></>
         }

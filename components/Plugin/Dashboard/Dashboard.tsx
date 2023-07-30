@@ -1,3 +1,5 @@
+"use client"
+
 import styled from "styled-components"
 import MilestoneList from "./MilestoneList/MilestoneList"
 import Charts from "./Charts"
@@ -22,7 +24,7 @@ const DashboardContainer = styled.div`
 `
 
 interface IOwnProps {
-    setSelectedAssignmentId: Dispatch<SetStateAction<number | undefined>>
+    setAssignmentAndCourseId: (assignmentId : number, courseId: number) => void
     milestones: IMilestone[];
     chartData: IChartData[][];
     toggleDone: (m:IMilestone) => void;
@@ -31,12 +33,18 @@ interface IOwnProps {
 
 
 export default function Dashboard(props: IOwnProps) {
+  const tmp = (milestone: IMilestone) => {
+    console.log(milestone)
+    debugger
+    props.setAssignmentAndCourseId(milestone.assignmentId, milestone.courseId)
+  }
+  
     return (
       <DashboardContainer>
         <Header
           title={"Dashboard"}
         />        
-        <MilestoneList toggleDone={props.toggleDone} editable={false} setSelectedAssignmentId={props.setSelectedAssignmentId} milestones={props.milestones}/>
+        <MilestoneList toggleDone={props.toggleDone} editable={false} onManageMilestone={tmp} milestones={props.milestones}/>
         <Charts dailyScope={props.dailyScope} chartData={props.chartData}/>
       </DashboardContainer>
     )

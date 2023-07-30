@@ -1,3 +1,6 @@
+"use client"
+
+
 import styled from "styled-components"
 import { IMilestone } from "../../Interfaces";
 import Milestone from "./Milestone";
@@ -35,7 +38,7 @@ const Down = styled.div`
 
 interface IOwnProps {
     milestones: IMilestone[];
-    setSelectedAssignmentId: Dispatch<SetStateAction<number | undefined>>;
+    onManageMilestone: (milestone: IMilestone) => void;
     deleteMilestone?: (milestone: IMilestone) => void;
     swapMilestoneUp?: (swappedMilestone: IMilestone, swapMilestones: IMilestone[]) => void
     swapMilestoneDown?: (swappedMilestone: IMilestone, swapMilestones: IMilestone[]) => void
@@ -59,7 +62,7 @@ export default function MilestoneList(props: IOwnProps) {
                     toggleDone={props.toggleDone}
                     editable={props.editable} 
                     onDelete={() => onDelete(milestone)} 
-                    setSelectedAssignmentId={props.setSelectedAssignmentId} 
+                    setAssignmentAndCourseId={() => props.onManageMilestone(milestone)} 
                     milestone={milestone}
                   />
                   { !milestone.deadline && props.editable

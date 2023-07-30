@@ -80,7 +80,7 @@ export default function MilestoneManager(props: IOwnProps) {
               />
               
               <MilestoneList 
-                setSelectedAssignmentId={setSelectedMilestoneId} 
+                onManageMilestone={(milestone: IMilestone) => setSelectedMilestoneId(milestone.id)}
                 toggleDone={props.toggleDone} 
                 swapMilestoneUp={props.swapMilestoneUp} 
                 swapMilestoneDown={props.swapMilestoneDown} 
@@ -103,9 +103,9 @@ export default function MilestoneManager(props: IOwnProps) {
   }
 
   const getMilestoneById = (milestoneId: number, milestones: IMilestone[]): IMilestone | undefined => {
-    for(const assignment of milestones){
-      if(assignment.id === milestoneId){
-        return assignment
+    for(const milestone of milestones){
+      if(milestone.id === milestoneId){
+        return milestone
       }
     }
   }

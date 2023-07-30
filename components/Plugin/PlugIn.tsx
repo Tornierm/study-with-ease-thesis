@@ -6,7 +6,7 @@ import { useEffect, useState } from "react"
 import { IAssignment, IChartData, ICourse, IMilestone, IMilestoneData, Kind, Prio, Status } from "./Interfaces"
 import MilestoneManager from "./MilestoneManager/MilestoneManager"
 import _ from "lodash"
-import menu from "../../public/menu.png"
+import { initialCourses } from "./CourseData"
 
 const DashboardContainer = styled.div`
   height: 600px;
@@ -15,104 +15,8 @@ const DashboardContainer = styled.div`
   grid-area: plugin;
 `
 
-const initialCourses: Map<number, ICourse> = new Map([
-  [1, {
-    id: 1,
-    name: "math",
-    assignments: new Map([
-      [1,
-        {
-          start: new Date(2023,9,16),
-          deadline: new Date(2023,9,29),
-          name: "assignment1",
-          id: 1,
-          courseName: "math",
-          courseId: 1,
-          counter: 3,
-          instructions: menu,
-          material: [menu, menu, menu],
-          milestones: [
-            {
-              name: "Plan",
-              description: "",
-              assignment: "assignment1",
-              assignmentId: 1,
-              courseId: 1,
-              course: "math",
-              status: Status.ongoing,
-              id: 1,
-              prio: Prio.p0,
-              // deadline: new Date(2023,9,16),
-              kind: Kind.plan,
-              tasks:[],
-            },
-            {
-              name: "Submit",
-              description: "",
-              assignment: "assignment1",
-              assignmentId: 1,
-              courseId: 1,
-              course: "math",
-              status: Status.ongoing,
-              id: 2,
-              prio: Prio.p0,
-              deadline: new Date(2023,9,29),
-              kind: Kind.submit,
-              tasks:[],
-            },
-          ],
-        }
-      ],  
-      [2,
-        {
-          start: new Date(2023,10,1),
-          deadline: new Date(2023,10,14),
-          name: "Assignment2",
-          id: 2,
-          courseName: "math",
-          courseId: 2,
-          counter: 3,
-          instructions: menu,
-          material: [menu, menu, menu],
-          milestones: [
-            {
-              name: "Plan",
-              description: "",
-              assignment: "Assignment2",
-              assignmentId: 2,
-              courseId: 1,
-              course: "math",
-              status: Status.ongoing,
-              id: 1,
-              prio: Prio.p0,
-              // deadline: new Date(2023,10,1),
-              kind: Kind.plan,
-              tasks:[],
-            },
-            {
-              name: "Submit",
-              description: "",
-              assignment: "Assignment2",
-              assignmentId: 2,
-              courseId: 1,
-              course: "math",
-              status: Status.ongoing,
-              id: 2,
-              prio: Prio.p0,
-              deadline: new Date(2023,10,14),
-              kind: Kind.submit,
-              tasks:[],
-            },
-          ],
-        }
-      ], 
-    ])
-  }]
-])
-
 interface IOwnProps {
   currentDate: Date,
-  setCurrentDate: any;
   reset: boolean;
   setReset: any;
 }
@@ -157,6 +61,8 @@ export default function PlugIn(props: IOwnProps) {
   }
 
     const [selectedAssignmentId, setSelectedAssignmentId] = useState<number | undefined>(undefined)
+    const [selectedCourseId, setSelectedCourseId] = useState<number | undefined>(undefined)
+
     const [selectedAssignment, setSelectedAssignment] = useState<IAssignment | undefined>(undefined)
     const [assignments, setAssignments] = useState<IAssignment[]>(getAssignmentsFromCourses(initialCourses))
     const [courses, setCourses] = useState<Map<number, ICourse>>(getCourses())
@@ -188,7 +94,7 @@ export default function PlugIn(props: IOwnProps) {
         milestone.status= Status.finished
         milestone.completionDate = new Date(JSON.parse(JSON.stringify(props.currentDate)));
         if(milestone.kind === Kind.submit){
-          let a = getAssignmentById(milestone.assignmentId, getAssignmentsFromCourses(courses))
+          let a = getAssignmentByIdAndCourseId(milestone.assignmentId, milestone.courseId, getAssignmentsFromCourses(courses))
           if(!a){
             return
           }
@@ -293,16 +199,18 @@ export default function PlugIn(props: IOwnProps) {
       fillPrio2(tmp)
       a.milestones.forEach((m, i) => {
         m.prio = tmp.milestones[i].prio;
+        m.tmpDeadline = tmp.milestones[i].deadline;
       })
     }
-
-   
 
     const fillDeadlines = (tmp: IAssignment) => {
       let priorIndexWithDate: number;
       let counter = 0;
       tmp.milestones.forEach((milestone, i) => {
-        if(!milestone.deadline){
+        if(milestone.kind === Kind.plan){
+          tmp.milestones[0].deadline = addDays(tmp.start, 5)
+        }
+        else if(!milestone.deadline){
           counter++
         } else {
           let deadline1;
@@ -396,9 +304,14 @@ export default function PlugIn(props: IOwnProps) {
       }
     }
 
+    const setAssignmentAndCourseId = (assignmentId: number, courseId: number) => {
+      setSelectedAssignmentId(assignmentId)
+      setSelectedCourseId(courseId)
+    }
+
     useEffect(() => {
-      if(selectedAssignmentId){
-        setSelectedAssignment(getAssignmentById(selectedAssignmentId, assignments))
+      if(selectedAssignmentId && selectedCourseId){
+        setSelectedAssignment(getAssignmentByIdAndCourseId(selectedAssignmentId, selectedCourseId, assignments))
       } else {
         setSelectedAssignment(undefined)
       }
@@ -426,7 +339,7 @@ export default function PlugIn(props: IOwnProps) {
     if(props.reset == true){
       const tmp = _.cloneDeep(initialCourses)
       setCourses(tmp)
-      setUpdate(true)
+      setUpdate(!update)
       props.setReset(false)
     } 
   }, [props.reset])
@@ -445,16 +358,16 @@ export default function PlugIn(props: IOwnProps) {
               swapMilestoneDown={swapMilestoneDown}
               toggleDone={toggleDone}
             /> 
-            : <Dashboard dailyScope={dailyScope} chartData={chartData} toggleDone={toggleDone} setSelectedAssignmentId={setSelectedAssignmentId} milestones={milestones}/>
+            : <Dashboard dailyScope={dailyScope} chartData={chartData} toggleDone={toggleDone} setAssignmentAndCourseId={setAssignmentAndCourseId} milestones={milestones}/>
           }
       </DashboardContainer>
     )
   }
 
 
-  const getAssignmentById = (assignentId: number, assignments: IAssignment[]): IAssignment | undefined => {
+  const getAssignmentByIdAndCourseId = (assignentId: number, courseId:number, assignments: IAssignment[]): IAssignment | undefined => {
     for(const assignment of assignments){
-      if(assignment.id === assignentId){
+      if(assignment.id === assignentId && assignment.courseId === courseId){
         return assignment
       }
     }
@@ -525,6 +438,12 @@ const getMilestonesFromCourses = (courses: Map<number, ICourse>, currentDate: Da
         milestones.push(milestone);
       }
     })
+  })
+  milestones.sort((m1, m2) => {
+    if(!m1.tmpDeadline || !m2.tmpDeadline){
+      return 1
+    }
+    return m1.tmpDeadline < m2.tmpDeadline ? -1 : 1;
   })
   return milestones;
 }

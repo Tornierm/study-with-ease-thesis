@@ -27,7 +27,30 @@ const Container = styled.div`
 const InitialDate = new Date(2023,9,16)
 
 export default function Home() {
-  const [currentDate, setCurrentDate] = useState<Date>(InitialDate);
+
+  const getDate = () => {
+    let date;
+    if (typeof window !== 'undefined') {
+      // Perform localStorage action
+      const storedDate = localStorage.getItem("study-with-ease-date")
+      if(storedDate){
+        date = new Date(JSON.parse(storedDate))
+      } else {
+        date = InitialDate;
+      }
+    } else {
+      date = InitialDate;
+    }
+    return date;
+  }
+
+  const setDate = (date: Date) => {
+    const string = JSON.stringify(date);
+    localStorage.setItem("study-with-ease-date", string)
+    setCurrentDate(date)
+  }
+
+  const [currentDate, setCurrentDate] = useState<Date>(getDate());
   const [reset, setReset] = useState<boolean>(false);
 
   return (
@@ -40,8 +63,8 @@ export default function Home() {
       <Container>
         <Nav/>
         <Menu/>
-        <PlugIn reset={reset} setReset={setReset} currentDate={currentDate} setCurrentDate={setCurrentDate}/>
-        <TimeWizard reset={reset} setReset={setReset} setDate={setCurrentDate} date={currentDate}/>
+        <PlugIn reset={reset} setReset={setReset} currentDate={currentDate} />
+        <TimeWizard reset={reset} setReset={setReset} setDate={setDate} date={currentDate}/>
       </Container>
     </main>
   )
