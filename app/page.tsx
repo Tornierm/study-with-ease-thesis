@@ -19,10 +19,11 @@ const Container = styled.div`
     "header header header"
     "menu plugin wizard"
     ;
-  grid-template-columns: auto minmax(600px, 1fr) auto;
+  grid-template-columns: auto minmax(600px, 1fr) 1fr;
   grid-template-rows: 50px auto;
   overflow: scroll;
   align-items: center;
+  justify-items: center;
 `
 
 const InitialDate = new Date(2023,9,15)
