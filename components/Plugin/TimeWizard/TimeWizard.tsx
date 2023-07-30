@@ -154,7 +154,7 @@ const getStory = (date: Date) => {
        </TextBox>
     }  else if(date.getTime() === new Date(2023,9,23).getTime()){
         return <TextBox>
-              <Text>{""}</Text>
+              <Text>{" "}</Text>
             <Instruction>{"If you havent already done so, complete \"Solve Section 2\" and \"Solve Section 3\", by clicking the checkbox for the corresponding milestone. "}<br/>{"Do the same for the \"submit\" milestone of this assignment. "}<br/>{"No scroll down on the chart section to see the assignment progress in the pie chart."}</Instruction>
        </TextBox>
     } 
