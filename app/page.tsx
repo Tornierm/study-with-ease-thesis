@@ -22,7 +22,6 @@ const Container = styled.div`
   grid-template-columns: auto minmax(600px, 1fr) 1fr;
   grid-template-rows: 50px auto;
   overflow: scroll;
-  align-items: center;
   justify-items: center;
 `
 
