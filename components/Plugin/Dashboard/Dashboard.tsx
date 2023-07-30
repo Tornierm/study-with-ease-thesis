@@ -34,8 +34,6 @@ interface IOwnProps {
 
 export default function Dashboard(props: IOwnProps) {
   const tmp = (milestone: IMilestone) => {
-    console.log(milestone)
-    debugger
     props.setAssignmentAndCourseId(milestone.assignmentId, milestone.courseId)
   }
   

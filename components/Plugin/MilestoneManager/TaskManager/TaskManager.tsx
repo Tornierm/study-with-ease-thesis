@@ -44,6 +44,7 @@ export default function TaskManager(props: IOwnProps) {
         })
         setTasks(tmp)
         setUpdate(false)
+            // eslint-disable-next-line react-hooks/exhaustive-deps
     },[update])
 
     const deleteTask = (index: number) => {

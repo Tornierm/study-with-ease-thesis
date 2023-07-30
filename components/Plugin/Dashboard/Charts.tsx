@@ -26,7 +26,6 @@ const Background = styled.div`
   justify-content: center;
   background-color: white;
   width:250px;
-  height:400px;
 `
 
 interface IOwnProps {
@@ -126,8 +125,6 @@ const pieData = {
         '#BED9EE',
         '#5E5C6C',
         '#BEBDC7',
-        '#202C59',
-        '#A5B2DF',
         '#16810E',
         '#A9F5A3',
       ],
@@ -138,8 +135,6 @@ const pieData = {
         '#5299D3',
         '#5E5C6C',
         '#5E5C6C',
-        '#202C59',
-        '#202C59',
         '#16810E',
         '#16810E',
       ],

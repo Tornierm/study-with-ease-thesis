@@ -315,6 +315,7 @@ export default function PlugIn(props: IOwnProps) {
       } else {
         setSelectedAssignment(undefined)
       }
+          // eslint-disable-next-line react-hooks/exhaustive-deps
     },[selectedAssignmentId, assignments]);
 
     useEffect(() => {
@@ -342,6 +343,7 @@ export default function PlugIn(props: IOwnProps) {
       setUpdate(!update)
       props.setReset(false)
     } 
+        // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.reset])
 
     return (
