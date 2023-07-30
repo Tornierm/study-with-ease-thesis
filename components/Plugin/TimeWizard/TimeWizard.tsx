@@ -144,13 +144,18 @@ const getStory = (date: Date) => {
        </TextBox>
      } else if(date.getTime() === new Date(2023,9,18).getTime()){
         return <TextBox>
-              <Text>{"You have a new Assignment in Philosophy. Your instructor already provided milestones for you :). Additionally he provided instructions for one of the milestones."}</Text>
+              <Text>{"You have a new Assignment in Philosophy. Your instructor already provided milestones for you :). Additionally he provided tasks for one of the milestones."}</Text>
             <Instruction>{"Click on \">\" on the \"Research and Gather Information\" milestone to visit the MilestoneManager. "}<br/>{" Click on \">\" on the \"Research and Gather Information\" milestone to visit the TaskManager. "}<br/>{" Click \"< Back\" in the header twice to return. "}<br/>{" Then Forward 1 day."}</Instruction>
        </TextBox>
      } else if(date.getTime() === new Date(2023,9,19).getTime()){
         return <TextBox>
               <Text>{"You have a new assignment in Metaphysics. This assignment does not have any Milestones specified. You have to plan it yourself !"}</Text>
-            <Instruction>{"Plan the assignment now or once it feels appropriate, by clicking on \">\” on the milestone, checking the instructions and creating milestones towards the completion of the assignment."}</Instruction>
+            <Instruction>{"Plan the assignment now or once it feels appropriate, by clicking on \">\” on the milestone, checking the instructions and creating milestones towards the completion of the assignment."}<br/>{"Forward 4 days."}</Instruction>
+       </TextBox>
+    }  else if(date.getTime() === new Date(2023,9,23).getTime()){
+        return <TextBox>
+              <Text>{""}</Text>
+            <Instruction>{"If you havent already done so, complete \"Solve Section 2\" and \"Solve Section 3\", by clicking the checkbox for the corresponding milestone. "}<br/>{"Do the same for the \"submit\" milestone of this assignment. "}<br/>{"No scroll down on the chart section to see the assignment progress in the pie chart."}</Instruction>
        </TextBox>
     } 
     //  if(date.getTime() === new Date(2023,9,20).getTime()){
