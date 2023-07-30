@@ -139,12 +139,12 @@ const getStory = (date: Date) => {
        </TextBox>
     } else if(date.getTime() === new Date(2023,9,16).getTime()){
         return <TextBox>
-              <Text>{"You have a new assignment in Math. Your instructor already provided milestones for you :)."}</Text>
+              <Text>{"You have a new assignment in Math. Your instructor already provided milestones for you."}</Text>
             <Instruction>{"Click the checkbox on the \"Solve Section 1\" milestone and check your progress in the daily and weekly chart. "}<br/>{" Then forward 2 days."}</Instruction>
        </TextBox>
      } else if(date.getTime() === new Date(2023,9,18).getTime()){
         return <TextBox>
-              <Text>{"You have a new Assignment in Philosophy. Your instructor already provided milestones for you :). Additionally he provided tasks for one of the milestones."}</Text>
+              <Text>{"You have a new Assignment in Philosophy. Your instructor already provided milestones for you. Additionally he provided tasks for one of the milestones."}</Text>
             <Instruction>{"Click on \">\" on the \"Research and Gather Information\" milestone to visit the MilestoneManager. "}<br/>{" Click on \">\" on the \"Research and Gather Information\" milestone to visit the TaskManager. "}<br/>{" Click \"< Back\" in the header twice to return. "}<br/>{" Then Forward 1 day."}</Instruction>
        </TextBox>
      } else if(date.getTime() === new Date(2023,9,19).getTime()){
