@@ -11,12 +11,15 @@ import { Slider } from '@/components/ui/slider';
 import { es } from 'date-fns/locale';
 
 const MilestoneFormContainer = styled.div`
-    border: 1px solid black;
     background-color: white;
-    padding:4px;
+    padding:8px;
     display:flex;
     flex-direction: column;
     gap:4px;
+`
+
+const FormLabel = styled(Label)`
+  margin-top: 8px;
 `
 
 const SliderContainer = styled.div`
@@ -34,12 +37,18 @@ const ButtonContainer = styled.div`
   justify-content: center;
 `
 
+const Close = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`
+
 interface IOwnProps {
   milestone: IMilestone;
   courseId: number;
   assignment: IAssignment;
   addMilestone: (milestone: IMilestoneData) => void;
   currentDate: Date;
+  onClose: any;
 }
 
 export default function MilestoneForm(props: IOwnProps) {
@@ -82,12 +91,13 @@ export default function MilestoneForm(props: IOwnProps) {
 
   return (
     <MilestoneFormContainer>
-        <FormTitle>MilestoneForm</FormTitle>
-        <Label htmlFor="name">Name</Label>
+        <Close onClick={props.onClose}>x</Close>
+        <FormTitle>Create New Milestone</FormTitle>
+        <FormLabel htmlFor="name">Name*</FormLabel>
         <Input onChange={(e) => setName(e.target.value)} type="text" id="name" placeholder='name'></Input>
-        <Label htmlFor="description">Description</Label>
+        <FormLabel htmlFor="description">Description(optional)</FormLabel>
         <Textarea onChange={(e) => setDescription(e.target.value)} id="description" placeholder='description'></Textarea>
-        <Label htmlFor="deadline">Deadline</Label>
+        <FormLabel htmlFor="deadline">Deadline(optional)</FormLabel>
         <DatePicker 
           date={deadline} 
           today={props.currentDate}
@@ -99,7 +109,7 @@ export default function MilestoneForm(props: IOwnProps) {
             props.assignment.deadline
           }
         />
-        <Label htmlFor="slider">Estimate</Label>
+        <FormLabel htmlFor="slider">Estimate(optional)</FormLabel>
         <SliderContainer>
           <Slider
             value={estimate}

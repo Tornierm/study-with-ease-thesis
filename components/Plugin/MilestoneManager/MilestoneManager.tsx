@@ -1,12 +1,13 @@
 import styled from "styled-components"
-import { IAssignment, IMilestone, IMilestoneData, Prio, Status } from "../Interfaces";
+import { IAssignment, IMilestone, IMilestoneData, Mode, Prio, Status } from "../Interfaces";
 import { useEffect, useState } from "react";
 import MilestoneList from "../Dashboard/MilestoneList/MilestoneList";
-import { Title } from "../styled";
 import MilestoneForm from "./MilestoneForm";
 import Instructions from "./Instructions";
 import TaskManager from "./TaskManager/TaskManager";
 import Header from "../Header";
+import { Button } from "@/components/ui/button";
+import { Modern_Antiqua } from "next/font/google";
 
 const MilestoneManagerContainer = styled.div`
   height: 600px;
@@ -17,11 +18,12 @@ const MilestoneManagerContainer = styled.div`
   grid-template-areas:
     "header header"
     "list  instructions"
-    "list  createForm";
+    "list  buttons";
   grid-template-rows: 50px 1fr 1fr;
   grid-template-columns: 1fr 1fr;
   gap: 8px 8px;
   padding:8px;
+  position: relative;
 `
 
 const PositionedHeader = styled(Header)`
@@ -41,6 +43,34 @@ const newMilestone: IMilestone = {
   tasks: []
 }
 
+const Form = styled.div`
+  grid-area: form;
+`
+
+const Buttons = styled.div`
+  grid-area: buttons;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+`
+
+const Overlay = styled.div`
+  width:100%;
+  height: 100%;
+  position: absolute;
+  background-color: rgba(0,0,0,0.5);
+  display:grid;
+  grid-template-areas: 
+    "a b close"
+    "a form c"
+    "a d d"
+    ;
+  grid-template-columns: 50px 1fr 50px;
+  grid-template-rows: 50px 1fr 50px;
+  align-items: center;
+  justify-items: center;
+`
+
 interface IOwnProps {
   selectedAssignment: IAssignment;
   close: any;
@@ -55,6 +85,7 @@ interface IOwnProps {
 export default function MilestoneManager(props: IOwnProps) {
 
   const [tmp, setTmp] = useState<IMilestone>(newMilestone)
+  const [showDialog, setShowDialog] = useState<boolean>(false)
 
   const [selectedMilestone, setSelectedMilestone] = useState<IMilestone | undefined>(undefined)
     const [selectedMilestoneId, setSelectedMilestoneId] = useState<number | undefined>(undefined)
@@ -88,14 +119,24 @@ export default function MilestoneManager(props: IOwnProps) {
                 deleteMilestone={props.deleteMilestone} 
                 milestones={props.selectedAssignment.milestones}
               />
-              <MilestoneForm 
-                currentDate={props.currentDate}
-                addMilestone={props.addMilestone}
-                milestone={tmp}
-                courseId={props.selectedAssignment.courseId}
-                assignment={props.selectedAssignment} 
-              />
+              <Buttons>
+                <Button onClick={() => setShowDialog(true)}>Create Milestone</Button>
+              </Buttons>
               <Instructions assignment={props.selectedAssignment}/>
+              {showDialog 
+                ? <Overlay>
+                    <Form>
+                    <MilestoneForm 
+                      onClose={() => setShowDialog(false)}
+                      currentDate={props.currentDate}
+                      addMilestone={props.addMilestone}
+                      milestone={tmp}
+                      courseId={props.selectedAssignment.courseId}
+                      assignment={props.selectedAssignment} 
+                    />
+                    </Form>
+                  </Overlay> 
+                : <></>}
           </MilestoneManagerContainer>
         }
       </>    

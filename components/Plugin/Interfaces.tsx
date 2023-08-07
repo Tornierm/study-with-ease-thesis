@@ -67,6 +67,11 @@ export enum Status {
     "ongoing"
 }
 
+export enum Mode {
+	"edit",
+    "create"
+}
+
 export enum Kind {
 	"submit",
     "plan"

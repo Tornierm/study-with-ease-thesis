@@ -333,6 +333,7 @@ export default function PlugIn(props: IOwnProps) {
 
   useEffect(() => {
       setUpdate(!update)
+      setSelectedAssignmentId(undefined)
       // eslint-disable-next-line react-hooks/exhaustive-deps
   },[props.currentDate])
 

@@ -14,7 +14,6 @@ const TimeWizardContainer = styled.div`
         "title title title title"
         "text text text text"
         "reset reset reset reset"
-
         "backward date date forward";
     grid-template-columns:1fr 1fr 1fr 1fr;
     grid-template-rows:50px 1fr 50px 50px;
@@ -122,7 +121,7 @@ export default function TimeWizard(props: IOwnProps) {
   return (
     <TimeWizardContainer>
         <StyledTitle>Simulator</StyledTitle>
-        <Reset onClick={onReset}><Red>Reset</Red></Reset>
+        <Reset onClick={onReset}><Red>reset</Red></Reset>
         <Story>{getStory(props.date)}</Story>
         <DateTime>{props.date.toDateString()}</DateTime>
         <Forward onClick={increaseDate}><Red>{">>"}</Red></Forward>
@@ -134,28 +133,41 @@ export default function TimeWizard(props: IOwnProps) {
 const getStory = (date: Date) => {
     if(date.getTime() === new Date(2023,9,15).getTime()){
        return <TextBox>
-              <Text>{"Welcome to study-with-ease - a PlugIn to support your task management. This Simulator exists to help us simulate how this plug-in would support you throughout a Semester."}</Text>
+              <Text>{"Welcome to study-with-ease - a plug-in to support your task management. This Simulator exists to help us simulate how this plug-in would support you throughout a semester."}</Text>
             <Instruction>{"Press "}<Red>{">>"}</Red>{" next to the current date to go to the next day. "}<br/>{" Press "}<Red>{"reset"}</Red>{" to return to the initial state of the plug-in."}</Instruction>
        </TextBox>
     } else if(date.getTime() === new Date(2023,9,16).getTime()){
         return <TextBox>
               <Text>{"You have a new assignment in Math. Your instructor already provided milestones for you."}</Text>
-            <Instruction>{"Click the checkbox on the \"Solve Section 1\" milestone and check your progress in the daily and weekly chart. "}<br/>{" Then forward 2 days."}</Instruction>
+            <Instruction>{"1. Click the checkbox on the \"Solve Section 1\" milestone and check your progress in the daily and weekly chart. "}<br/>{"2. Then forward 2 days."}</Instruction>
        </TextBox>
      } else if(date.getTime() === new Date(2023,9,18).getTime()){
         return <TextBox>
               <Text>{"You have a new Assignment in Philosophy. Your instructor already provided milestones for you. Additionally he provided tasks for one of the milestones."}</Text>
-            <Instruction>{"Click on \">\" on the \"Research and Gather Information\" milestone to visit the MilestoneManager. "}<br/>{" Click on \">\" on the \"Research and Gather Information\" milestone to visit the TaskManager. "}<br/>{" Click \"< Back\" in the header twice to return. "}<br/>{" Then Forward 1 day."}</Instruction>
+            <Instruction>
+                {"1. Click on \">\" on the \"Research and Gather Information\" milestone to visit the MilestoneManager. "}
+                <br/>{"2. Click on \">\" on the \"Research and Gather Information\" milestone to visit the TaskManager. "}
+                <br/>{"3. Complete the task \"Read \"A Theory of Justice\" by John Rawls\"."}
+                <br/>{"4. Then Forward 1 day."}
+            </Instruction>
        </TextBox>
      } else if(date.getTime() === new Date(2023,9,19).getTime()){
         return <TextBox>
               <Text>{"You have a new assignment in Metaphysics. This assignment does not have any Milestones specified. You have to plan it yourself !"}</Text>
-            <Instruction>{"Plan the assignment now or once it feels appropriate, by clicking on \">\” on the milestone, checking the instructions and creating milestones towards the completion of the assignment."}<br/>{"Forward 4 days."}</Instruction>
+            <Instruction>{"1. Click on \">\” on the \"Plan\" milestone, check the instructions and create milestones that imply completion of the assignment."}<br/>{"2. Click the checkbox on the \"Plan\" milestone."}<br/>{"3. Forward 4 days."}</Instruction>
        </TextBox>
-    }  else if(date.getTime() === new Date(2023,9,23).getTime()){
+    } else if(date.getTime() === new Date(2023,9,23).getTime()){
         return <TextBox>
               <Text>{" "}</Text>
-            <Instruction>{"If you havent already done so, complete \"Solve Section 2\" and \"Solve Section 3\", by clicking the checkbox for the corresponding milestone. "}<br/>{"Do the same for the \"submit\" milestone of this assignment. "}<br/>{"No scroll down on the chart section to see the assignment progress in the pie chart."}</Instruction>
+            <Instruction>{"1. Complete \"Solve Section 2\" and \"Solve Section 3\", by clicking the checkbox for the corresponding milestone. "}
+            <br/>{"2. Now scroll down on the chart section to see the assignment progress in the pie chart."}
+            <br/>{"3. Complete the \"Submit\" milestone of this assignment. "}
+            <br/>{"4. Skip until the 29th of October."}</Instruction>
+       </TextBox>
+    } else if(date.getTime() === new Date(2023,9,29).getTime()){
+        return <TextBox>
+              <Text>{"Quite some milestones have accumulated. It's sunday and you have quite some time on your hands to work on your assignments."}</Text>
+            <Instruction>{"1. Complete any Milestones you feel are neccessary."}</Instruction>
        </TextBox>
     } 
     //  if(date.getTime() === new Date(2023,9,20).getTime()){

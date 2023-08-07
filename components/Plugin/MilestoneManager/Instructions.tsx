@@ -15,7 +15,8 @@ const InstructionContainer = styled.div`
 `
 
 const Link = styled.a`
-
+  color: blue;
+  text-decoration: underline;
 `
 
 const Line = styled.div`
@@ -46,6 +47,10 @@ export default function Instructions(props: IOwnProps) {
           {/* {props.assignment.material.map((m, i) => {
             return <Link key={i} download href={m.src}>{"Material "+i + "  "}</Link>
           })} */}
+        </Line>
+        <Line>
+          <Label>Deadline:</Label>
+          <p>{props.assignment.deadline.toDateString()}</p>
         </Line>
 
     </InstructionContainer>

@@ -322,7 +322,7 @@ const IntroToPhilosophy: ICourse = {
     [1,
       {
         start: new Date(2023,9,18),
-        deadline: new Date(2023,11,6),
+        deadline: new Date(2023,10,8),
         name: "Philosophy Assignment 1",
         id: 1,
         courseName: "Philosophy",
@@ -437,7 +437,7 @@ const IntroToPhilosophy: ICourse = {
             kind:Kind.submit,
             id: 7,
             prio: Prio.p0,
-            deadline: new Date(2023,11,6),
+            deadline: new Date(2023,10,8),
             tasks:[],
           },
         ],
