@@ -22,9 +22,19 @@ interface IOwnProps {
 }
 
 export default function PlugIn(props: IOwnProps) {
+
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    // This will only run on the client
+    if (typeof window !== 'undefined') {
+      setIsClient(true);
+    }
+  }, []);
+
   const getCourses = (): Map<number, ICourse> => {
     let stringed;
-    if (typeof window !== 'undefined') {
+    if (isClient) {
       stringed = localStorage.getItem("study-with-ease")
     }
     if(stringed) {
@@ -54,7 +64,7 @@ export default function PlugIn(props: IOwnProps) {
       c.assignments = Array.from(c.assignments.entries())
     })
     let stringed = JSON.stringify(Array.from(tmp.entries()))
-    if (typeof window !== 'undefined') {
+    if (isClient) {
       // Perform localStorage action
       localStorage.setItem("study-with-ease", stringed)
     }

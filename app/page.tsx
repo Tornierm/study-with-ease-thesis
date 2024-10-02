@@ -5,7 +5,7 @@ import Menu from '@/components/Moodle/menu'
 import PlugIn from '@/components/Plugin/PlugIn'
 import TimeWizard from '@/components/Plugin/TimeWizard/TimeWizard'
 import Head from 'next/head'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 const Container = styled.div`
@@ -29,9 +29,18 @@ const InitialDate = new Date(2023,9,15)
 
 export default function Home() {
 
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    // This will only run on the client
+    if (typeof window !== 'undefined') {
+      setIsClient(true);
+    }
+  }, []);
+
   const getDate = () => {
     let date;
-    if (typeof window !== 'undefined') {
+    if (isClient) {
       // Perform localStorage action
       const storedDate = localStorage.getItem("study-with-ease-date")
       if(storedDate){
