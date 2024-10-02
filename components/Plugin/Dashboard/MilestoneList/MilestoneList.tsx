@@ -5,6 +5,7 @@ import styled from "styled-components"
 import { IMilestone } from "../../Interfaces";
 import Milestone from "./Milestone";
 import { Dispatch, SetStateAction, useEffect } from "react";
+import React from "react";
 
 const MilestoneListContainer = styled.div`
   grid-area: list;

@@ -1,133 +1,157 @@
-import React, { Dispatch, SetStateAction } from 'react'
-import styled from 'styled-components'
+"use client";
+
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
 import { Title, Title2 } from '../styled';
 
 const TimeWizardContainer = styled.div`
-    height:600px;
+    height: 600px;
     width: 80%;
     max-width: 400px;
     border: 2px solid white;
     border-radius: 50px;
     grid-area: wizard;
-    display:grid;
-    grid-template-areas: 
+    display: grid;
+    grid-template-areas:
         "title title title title"
         "text text text text"
         "reset reset reset reset"
         "backward date date forward";
-    grid-template-columns:1fr 1fr 1fr 1fr;
-    grid-template-rows:50px 1fr 50px 50px;
-    padding:8px;
-    justify-content:center;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 50px 1fr 50px 50px;
+    padding: 8px;
+    justify-content: center;
     margin: 24px;
     background-color: #343434;
     color: #ededed;
-`
+`;
 
-const Story =styled.div`
+const Story = styled.div`
     grid-area: text;
-    display:flex;
+    display: flex;
     justify-content: center;
     align-items: center;
-`
+`;
+
 const StyledTitle = styled(Title)`
-    display:flex;
+    display: flex;
     justify-content: center;
     align-items: center;
     grid-area: title;
-`
+`;
+
 const DateTime = styled(Title2)`
     grid-area: date;
-    width:180px;
-    overflow:scroll;
-    display:flex;
+    width: 180px;
+    overflow: scroll;
+    display: flex;
     justify-content: center;
     align-items: center;
-`
+`;
 
 const Forward = styled.div`
     grid-area: forward;
-    display:flex;
+    display: flex;
     justify-content: center;
     align-items: center;
-`
+    cursor: pointer;
+`;
 
 const Backward = styled.div`
     grid-area: backward;
-    display:flex;
+    display: flex;
     justify-content: center;
     align-items: center;
-`
+    cursor: pointer;
+`;
+
 const Reset = styled.div`
     grid-area: reset;
-    display:flex;
+    display: flex;
     justify-content: center;
     align-items: center;
-`
+    cursor: pointer;
+`;
 
 const Text = styled.div`
     text-align: justify;
-`
+`;
 
 const Instruction = styled.div`
     text-align: justify;
     font-style: italic;
     border: 1px solid #fefefe;
     padding: 8px;
-`
+`;
 
 const Red = styled.p`
     color: red;
     text-align: justify;
     display: inline;
-`
+`;
 
 const TextBox = styled.div`
     grid-area: text;
-    display:flex;
+    display: flex;
     flex-direction: column;
-    gap:16px;
-`
+    gap: 16px;
+`;
 
 interface IOwnProps {
     date: Date;
     setDate: (date: Date) => void;
-    setReset: any;
-    reset:boolean;
+    setReset: React.Dispatch<React.SetStateAction<boolean>>;
+    reset: boolean;
 }
 
-const InitialDate = new Date(2023,9,15)
+const InitialDate = new Date(2023, 9, 15);
 
 export default function TimeWizard(props: IOwnProps) {
+    const [isClient, setIsClient] = useState(false);
+
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
 
     const increaseDate = () => {
         props.setDate(addDays(props.date, 1));
-    }
+    };
+
     const decreaseDate = () => {
         props.setDate(addDays(props.date, -1));
-    }
+    };
 
-    function addDays(date: Date, days: number) {   
-        var result = new Date(date);
+    function addDays(date: Date, days: number) {
+        const result = new Date(date);
         result.setDate(result.getDate() + days);
         return result;
-     }
+    }
 
-     const onReset = () => {
-        props.setDate(InitialDate)
-        props.setReset(!props.reset)
-     }
+    const onReset = () => {
+        props.setDate(InitialDate);
+        props.setReset(!props.reset);
+    };
 
-  return (
-    <TimeWizardContainer>
-        <StyledTitle>Simulator</StyledTitle>
-        <Reset onClick={onReset}><Red>reset</Red></Reset>
-        <Story>{getStory(props.date)}</Story>
-        <DateTime>{props.date.toDateString()}</DateTime>
-        <Forward onClick={increaseDate}><Red>{">>"}</Red></Forward>
-        <Backward onClick={decreaseDate}><Red>{"<<"}</Red></Backward>
-    </TimeWizardContainer>
-  )
+    if (!isClient) {
+        return null; // Prevent rendering until on the client side
+    }
+
+    return (
+        <TimeWizardContainer>
+            <StyledTitle>Simulator</StyledTitle>
+            <Reset onClick={onReset}>
+                <Red>reset</Red>
+            </Reset>
+            <Story>{getStory(props.date)}</Story>
+            <DateTime>{props.date.toDateString()}</DateTime>
+            <Forward onClick={increaseDate}>
+                <Red>{">>"}</Red>
+            </Forward>
+            <Backward onClick={decreaseDate}>
+                <Red>{"<<"}</Red>
+            </Backward>
+        </TimeWizardContainer>
+    );
 }
 
 const getStory = (date: Date) => {
